@@ -4,6 +4,8 @@ const connection = require('./connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userRoute = require('./rootes/utilisateur');
+const adminRoute = require('./rootes/administrateur');
+const profRoute = require('./rootes/professeur');
 const app = express();
 
 // Middleware
@@ -26,6 +28,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 app.use('/utilisateur', userRoute);
+app.use('/administrateur', adminRoute);
+app.use('/administrateur', profRoute);
 
 
 const PORT = process.env.PORT || 8888;
