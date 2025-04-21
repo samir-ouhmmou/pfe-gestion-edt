@@ -1,0 +1,90 @@
+/*main*/
+.main-container {
+    height: 700px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 50px;
+    background-color: #f9f9f9;
+  }
+  
+  .main-text {
+    width: 1000px;
+    height: 400px;
+    
+  }
+  
+  .main-text h1 {
+    font-size: 80px;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    
+  }
+  
+  .main-text p {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+    
+  }
+  
+  .citation {
+    font-style: italic;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  .main-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .btn-consulte {
+    background-color: #a5e600;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .btn-en-savoir-plus {
+    background-color: white;
+    border: 2px solid #a5e600;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #1a1a1a;
+  }
+  .main-image{
+    width: 800px;
+    height: 700px;
+    border-top-left-radius: 600px;
+    border-bottom-left-radius: 600px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .main-image img {
+    width: 100%;       
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .infos-section {
+    margin: 20px ;
+    padding: 20px;
+    width: 80%;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    display: none;
+  }
+  
+  .infos-section.show {
+    display: block;
+  }

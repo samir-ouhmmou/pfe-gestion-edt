@@ -1,0 +1,14 @@
+.sidebar .nav-link:hover {
+    background-color: #eafbe0;
+    border-radius: 5px;
+  }
+  
+  .shortcut {
+    transition: transform 0.2s ease;
+  }
+  
+  .shortcut:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  

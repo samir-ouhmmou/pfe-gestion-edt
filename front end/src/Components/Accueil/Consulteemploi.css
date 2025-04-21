@@ -1,0 +1,39 @@
+.ligne-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  select {
+
+    width: 200px;
+    padding: 4px 8px;
+    font-size: 13px;
+    height: 40px;
+    border-radius: 4px;
+  }
+  
+  .btn-mini {
+    
+    background-color: #a5e600;
+    width: 200px;
+    height:12px ;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 25px 30px;
+    border-radius: 6px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    cursor: pointer;
+  }
+  
+  .btn-mini:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
