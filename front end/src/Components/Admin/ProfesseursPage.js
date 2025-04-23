@@ -5,7 +5,7 @@ function ClassManager() {
   const [professeurs, setProfesseur] = useState([]);
 
   const tableRef = useRef(null);
-  const isClickInsideInput = useRef(false); // 👈 pour éviter fermeture immédiate
+  const isClickInsideInput = useRef(false); // 
 
   const addProfesseur = () => {
     setProfesseur([...professeurs, { niveau: '', classe: '', capacite: 0, isEditing: true }]);
@@ -99,7 +99,7 @@ function ClassManager() {
                 handleEdit={handleEdit}
                 deleteClass={deleteClass}
                 toggleEdit={toggleEdit}
-                isClickInsideInput={isClickInsideInput} // 👈 on le passe ici
+                isClickInsideInput={isClickInsideInput} //
               />
             ))}
           </tbody>
