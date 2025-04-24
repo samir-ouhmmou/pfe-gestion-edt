@@ -142,44 +142,44 @@ function selectAleatoire(array) {
 //evaluation de fitness
 function evaluerFitness(population, data) {
     return population.map(individu => {
-      const fitness = calculerFitness(individu.emploiDuTemps, data);
+      const fitness = calculerFitness(individu.EDT, data);
       return { ...individu, fitness };
     });
   }
   ///////////ghid adlkmgh
 
-    function calculerFitness(emploiDuTemps, data) {
+    function calculerFitness(EDT , data) {
     let score = 1000; // Score de départ
     
     // conflits de professeurs
-    const conflitsProfs = compterConflitsProfs(emploiDuTemps);
+    const conflitsProfs = compterConflitsProfs(EDT);
     score -= conflitsProfs * 50;
     
     //conflits de salles
-    const conflitsSalles = compterConflitsSalles(emploiDuTemps);
+    const conflitsSalles = compterConflitsSalles(EDT);
     score -= conflitsSalles * 50;
     
     // conflits de classes 
-    const conflitsClasses = compterConflitsClasses(emploiDuTemps);
+    const conflitsClasses = compterConflitsClasses(EDT);
     score -= conflitsClasses * 50;
     
     //  professeurs assignés à des matières qu'ils ne peuvent pas enseigner
-    const conflitsMatieresProfs = compterConflitsMatieresProfs(emploiDuTemps, data);
+    const conflitsMatieresProfs = compterConflitsMatieresProfs(EDT, data);
     score -= conflitsMatieresProfs * 30;
     
     // les trous dans l'emploi du temps des classes
-    const trousClasses = compterTrousClasses(emploiDuTemps, data);
+    const trousClasses = compterTrousClasses(EDT, data);
     score -= trousClasses * 10;
     
     return Math.max(score, 0); //  fitness ne peut pas être négatif
   }
   
   // Fonctions pour le calcul de fitness
-  function compterConflitsProfs(emploiDuTemps) {
+  function compterConflitsProfs(EDT) {
     const conflicts = {};
     let count = 0;
     
-    emploiDuTemps.forEach(cours => {
+    EDT.forEach(cours => {
       const key = `${cours.prof_id}_${cours.creneau_id}`;
       if (conflicts[key]) {
         count++;
@@ -191,11 +191,11 @@ function evaluerFitness(population, data) {
     return count;
   }
   
-  function compterConflitsSalles(emploiDuTemps) {
+  function compterConflitsSalles(EDT) {
     const conflicts = {};
     let count = 0;
     
-    emploiDuTemps.forEach(cours => {
+    EDT.forEach(cours => {
       const key = `${cours.salle_id}_${cours.creneau_id}`;
       if (conflicts[key]) {
         count++;
@@ -207,11 +207,11 @@ function evaluerFitness(population, data) {
     return count;
   }
   
-  function compterConflitsClasses(emploiDuTemps) {
+  function compterConflitsClasses(EDT) {
     const conflicts = {};
     let count = 0;
     
-    emploiDuTemps.forEach(cours => {
+    EDT.forEach(cours => {
       const key = `${cours.classe_id}_${cours.creneau_id}`;
       if (conflicts[key]) {
         count++;
@@ -223,9 +223,9 @@ function evaluerFitness(population, data) {
     return count;
   }
   
-  function compterConflitsMatieresProfs(emploiDuTemps, data) {
+  function compterConflitsMatieresProfs(EDT, data) {
     let count = 0;
-    emploiDuTemps.forEach(cours => {
+    EDT.forEach(cours => {
       const prof = data.profs.find(p => p.id === cours.prof_id);
       if (prof && cours.matiere_id) {
         // Vérifiez si le professeur peut enseigner cette matière
@@ -239,7 +239,7 @@ function evaluerFitness(population, data) {
     return count;
   }
   
-  function compterTrousClasses(emploiDuTemps, data) {
+  function compterTrousClasses(EDT, data) {
     let count = 0;
     // Cette fonction est plus complexe
     // Implémentation simplifiée
@@ -272,16 +272,16 @@ function evaluerFitness(population, data) {
       const parent2 = selected[parent2Index];
       
       // Point de croisement
-      const crossPoint = Math.floor(Math.random() * parent1.emploiDuTemps.length);
+      const crossPoint = Math.floor(Math.random() * parent1.EDT.length);
       
       // Création des enfants
-      const enfant1EmploiDuTemps = [
-        ...parent1.emploiDuTemps.slice(0, crossPoint),
-        ...parent2.emploiDuTemps.slice(crossPoint)
+      const enfant1EDT = [
+        ...parent1.EDT.slice(0, crossPoint),
+        ...parent2.EDT.slice(crossPoint)
       ];
       
       offspring.push({
-        emploiDuTemps: enfant1EmploiDuTemps,
+        EDT: enfant1EDT,
         fitness: 0 // Sera calculé plus tard
       });
     }
@@ -295,10 +295,10 @@ function evaluerFitness(population, data) {
     
     return population.map(individu => {
       // Copie profonde de l'emploi du temps
-      const emploiDuTempsMute = JSON.parse(JSON.stringify(individu.emploiDuTemps));
+      const EDTMute = JSON.parse(JSON.stringify(individu.EDT));
       
       // Pour chaque cours, on a une chance de le muter
-      emploiDuTempsMute.forEach((cours, index) => {
+      EDTMute.forEach((cours, index) => {
         if (Math.random() < tauxMutation) {
           // Type de mutation aléatoire
           const typeMutation = Math.floor(Math.random() * 3);
@@ -322,7 +322,7 @@ function evaluerFitness(population, data) {
       });
       
       return {
-        emploiDuTemps: emploiDuTempsMute,
+        EDT: EDTMute,
         fitness: 0 // Sera recalculé
       };
     });
