@@ -142,7 +142,7 @@ const TimetablePage = () => {
       <Header />
       
       <main className="flex-1 pt-20">
-        <section className="py-12 bg-blue-800 text-white">
+        <section className="py-12 bg-gray-200  ">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0 }}
@@ -151,7 +151,7 @@ const TimetablePage = () => {
               className="text-center"
             >
               <h1 className="text-3xl font-bold mb-4">Consultation des Emplois du Temps</h1>
-              <p className="text-xl text-blue-100">
+              <p className="text-xl text-gray-500">
                 Consultez l'emploi du temps de n'importe quelle classe en quelques clics.
               </p>
             </motion.div>
@@ -205,7 +205,7 @@ const TimetablePage = () => {
                   <button
                     onClick={handleViewTimetable}
                     disabled={!selectedClass || isLoading}
-                    className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full px-4 py-2 bg-lime-600 text-white font-medium rounded-md hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 disabled:bg-lime-300 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     {isLoading ? (
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
@@ -229,7 +229,7 @@ const TimetablePage = () => {
                     </h2>
                     <button
                       onClick={generatePDF}
-                      className="flex items-center px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700"
+                      className="flex items-center px-3 py-2 bg-gray-600 text-white text-sm font-medium rounded-md hover:bg-gray-700"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Exporter en PDF
@@ -237,11 +237,79 @@ const TimetablePage = () => {
                   </div>
 
                   {/* TABLE */}
-                  {/* (le reste du code continue pareil avec ta table, etc.) */}
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-medium text-gray-700">
+                            Horaire
+                          </th>
+                          <th className="py-3 px-4 border-b border-gray-200 text-center text-sm font-medium text-gray-700">
+                            Lundi
+                          </th>
+                          <th className="py-3 px-4 border-b border-gray-200 text-center text-sm font-medium text-gray-700">
+                            Mardi
+                          </th>
+                          <th className="py-3 px-4 border-b border-gray-200 text-center text-sm font-medium text-gray-700">
+                            Mercredi
+                          </th>
+                          <th className="py-3 px-4 border-b border-gray-200 text-center text-sm font-medium text-gray-700">
+                            Jeudi
+                          </th>
+                          <th className="py-3 px-4 border-b border-gray-200 text-center text-sm font-medium text-gray-700">
+                            Vendredi
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'].map((timeSlot, index) => {
+                          const [startTime, endTime] = timeSlot.split('-');
+                          return (
+                            <tr key={timeSlot} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-700">
+                                {startTime} - {endTime}
+                              </td>
+                              {['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'].map((day) => {
+                                const entry = timetableData.find(
+                                  (e) => e.day === day && e.startTime === startTime && e.endTime === endTime
+                                );
+                                
+                                return (
+                                  <td key={`${day}-${timeSlot}`} className="py-3 px-4 border-b border-gray-200 text-center text-sm">
+                                    {entry ? (
+                                      <div>
+                                        <p className="font-medium text-gray-800">{entry.subject}</p>
+                                        <p className="text-gray-600">{getTeacherName(entry.teacherId)}</p>
+                                        <p className="text-gray-500">{getRoomName(entry.roomId)}</p>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </motion.div>
               )}
 
-              {/* ... (tes autres messages quand pas de classe sélectionnée, etc.) */}
+                {selectedClass && timetableData.length === 0 && !isLoading && (
+                  <div className="text-center py-8">
+                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-600">Aucun emploi du temps disponible pour cette classe.</p>
+                  </div>
+                )}
+                
+                {!selectedClass && !isLoading && (
+                  <div className="text-center py-8">
+                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-600">Sélectionnez un niveau et une classe pour afficher l'emploi du temps.</p>
+                  </div>
+                )}
             </div>
           </div>
         </section>

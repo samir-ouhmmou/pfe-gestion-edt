@@ -10,7 +10,7 @@ const AboutPage = () => {
       
       <main className="flex-1 pt-20">
         {/* Hero Section */}
-        <section className="py-16 bg-gradient-to-br from-blue-800 to-blue-600 text-white">
+        <section className="py-16 bg-gray-200 ">
           <div className="container mx-auto px-4">
             <motion.div 
               className="text-center max-w-3xl mx-auto"
@@ -19,7 +19,7 @@ const AboutPage = () => {
               transition={{ duration: 0.5 }}
             >
               <h1 className="text-4xl font-bold mb-6">À Propos de SchoolTimetable</h1>
-              <p className="text-xl text-blue-100">
+              <p className="text-xl text-gray-600">
                 Découvrez notre solution innovante pour la gestion automatique des emplois du temps dans les écoles primaires.
               </p>
             </motion.div>
@@ -47,24 +47,24 @@ const AboutPage = () => {
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
                   <div className="flex items-center">
-                    <Flag className="h-10 w-10 text-blue-600 mr-3" />
+                    <Flag className="h-10 w-10 text-green-600 mr-3" />
                     <div>
                       <h3 className="font-semibold text-gray-900">Fondée en</h3>
-                      <p className="text-gray-700">2023</p>
+                      <p className="text-gray-700">2025</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Users className="h-10 w-10 text-blue-600 mr-3" />
+                    <Users className="h-10 w-10 text-green-700 mr-3" />
                     <div>
                       <h3 className="font-semibold text-gray-900">Écoles utilisatrices</h3>
-                      <p className="text-gray-700">250+</p>
+                      <p className="text-gray-700">2+</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Calendar className="h-10 w-10 text-blue-600 mr-3" />
+                    <Calendar className="h-10 w-10 text-green-700 mr-3" />
                     <div>
                       <h3 className="font-semibold text-gray-900">Emplois du temps créés</h3>
-                      <p className="text-gray-700">10,000+</p>
+                      <p className="text-gray-700">10+</p>
                     </div>
                   </div>
                 </div>
@@ -91,32 +91,32 @@ const AboutPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  icon: <Calendar className="h-10 w-10 text-blue-600" />,
+                  icon: <Calendar className="h-10 w-10 text-green-700" />,
                   title: "Génération Automatique",
                   description: "Création automatique des emplois du temps en tenant compte de toutes les contraintes et préférences."
                 },
                 {
-                  icon: <CheckCircle className="h-10 w-10 text-blue-600" />,
+                  icon: <CheckCircle className="h-10 w-10 text-green-700" />,
                   title: "Gestion des Ressources",
                   description: "Allocation optimale des salles et gestion efficace des disponibilités des enseignants."
                 },
                 {
-                  icon: <Users className="h-10 w-10 text-blue-600" />,
+                  icon: <Users className="h-10 w-10 text-green-700" />,
                   title: "Gestion des Enseignants",
                   description: "Interface dédiée pour la gestion des disponibilités et des absences des professeurs."
                 },
                 {
-                  icon: <Clock className="h-10 w-10 text-blue-600" />,
+                  icon: <Clock className="h-10 w-10 text-green-700" />,
                   title: "Ajustements en Temps Réel",
                   description: "Modification facile des emplois du temps avec mise à jour instantanée pour tous les utilisateurs."
                 },
                 {
-                  icon: <Download className="h-10 w-10 text-blue-600" />,
+                  icon: <Download className="h-10 w-10 text-green-700" />,
                   title: "Export Facile",
                   description: "Exportation des emplois du temps en PDF pour un partage et une diffusion simplifiés."
                 },
                 {
-                  icon: <CheckCircle className="h-10 w-10 text-blue-600" />,
+                  icon: <CheckCircle className="h-10 w-10 text-green-700" />,
                   title: "Tableau de Bord Intuitif",
                   description: "Interface administrateur claire et intuitive pour une gestion efficace des données."
                 }
@@ -196,7 +196,7 @@ const AboutPage = () => {
         </section>
         
         {/* CTA Section */}
-        <section className="py-16 bg-blue-100">
+        <section className="py-16 bg-gray-200">
           <div className="container mx-auto px-4">
             <div className="bg-white rounded-lg shadow-xl p-8 max-w-4xl mx-auto">
               <div className="text-center">
@@ -210,7 +210,7 @@ const AboutPage = () => {
                 <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <a
                     href="/timetable"
-                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    className="px-6 py-3 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition-colors"
                   >
                     Consulter les emplois du temps
                   </a>

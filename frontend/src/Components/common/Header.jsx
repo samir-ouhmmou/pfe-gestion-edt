@@ -40,32 +40,32 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <School className="h-8 w-8 text-blue-800" />
-          <span className="text-xl font-bold text-blue-900">SchoolTimetable</span>
+          <School className="h-8 w-8 text-lime-600" />
+          <span className="text-xl font-bold ">SchoolTimetable</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link
             to="/"
-            className={`text-sm font-medium transition-colors hover:text-blue-700 ${
-              location.pathname === '/' ? 'text-blue-700' : 'text-gray-700'
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
+              location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
             }`}
           >
             Accueil
           </Link>
           <Link
             to="/timetable"
-            className={`text-sm font-medium transition-colors hover:text-blue-700 ${
-              location.pathname === '/timetable' ? 'text-blue-700' : 'text-gray-700'
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
+              location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
             }`}
           >
             Emploi du Temps
           </Link>
           <Link
             to="/about"
-            className={`text-sm font-medium transition-colors hover:text-blue-700 ${
-              location.pathname === '/about' ? 'text-blue-700' : 'text-gray-700'
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
+              location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
             }`}
           >
             En Savoir Plus
@@ -73,7 +73,7 @@ const Header = () => {
           
           {isAuthenticated ? (
             <div className="relative group">
-              <button className="flex items-center space-x-1 text-sm font-medium text-gray-700 hover:text-blue-700">
+              <button className="flex items-center space-x-1 text-sm font-medium text-gray-700 hover:text-lime-500">
                 <User className="h-4 w-4" />
                 <span>{user?.name}</span>
               </button>
@@ -96,7 +96,7 @@ const Header = () => {
           ) : (
             <Link
               to="/login"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-lime-500 rounded-md hover:bg-lime-600 transition-colors"
             >
               Se connecter
             </Link>
@@ -106,7 +106,7 @@ const Header = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMenu}
-          className="md:hidden text-gray-700 hover:text-blue-700 focus:outline-none"
+          className="md:hidden text-gray-700 hover:text-lime-500 focus:outline-none"
         >
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -125,7 +125,7 @@ const Header = () => {
               to="/"
               onClick={closeMenu}
               className={`block py-2 text-base font-medium ${
-                location.pathname === '/' ? 'text-blue-700' : 'text-gray-700'
+                location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
               }`}
             >
               Accueil
@@ -134,7 +134,7 @@ const Header = () => {
               to="/timetable"
               onClick={closeMenu}
               className={`block py-2 text-base font-medium ${
-                location.pathname === '/timetable' ? 'text-blue-700' : 'text-gray-700'
+                location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
               }`}
             >
               Emploi du Temps
@@ -143,7 +143,7 @@ const Header = () => {
               to="/about"
               onClick={closeMenu}
               className={`block py-2 text-base font-medium ${
-                location.pathname === '/about' ? 'text-blue-700' : 'text-gray-700'
+                location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
               }`}
             >
               En Savoir Plus
@@ -170,7 +170,7 @@ const Header = () => {
               <Link
                 to="/login"
                 onClick={closeMenu}
-                className="block py-2 text-base font-medium text-blue-700"
+                className="block py-2 text-base font-medium text-lime-500"
               >
                 Se connecter
               </Link>

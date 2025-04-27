@@ -61,7 +61,7 @@ const LoginPage = () => {
         >
           <div>
             <div className="flex justify-center">
-              <School className="h-12 w-12 text-blue-700" />
+              <School className="h-12 w-12 text-lime-600" />
             </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Connectez-vous à votre compte
@@ -115,7 +115,7 @@ const LoginPage = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                <a href="#" className="font-medium text-green-600 hover:text-green-500">
                   Mot de passe oublié ?
                 </a>
               </div>
@@ -125,7 +125,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-lime-500 hover:bg-lime-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 disabled:bg-lime-400"
               >
                 {isLoading && <Loader className="animate-spin h-5 w-5 mr-2" />}
                 Se connecter
