@@ -4,8 +4,8 @@ const connection = require('./connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userRoute = require('./rootes/utilisateur');
-const adminRoute = require('./rootes/administrateur');
-const profRoute = require('./rootes/professeur');
+const adminRoute = require('./rootes/admin/administrateur');
+const profRoute = require('./rootes/prof/professeur');
 const app = express();
 
 // Middleware
@@ -27,9 +27,9 @@ const authenticateToken = (req, res, next) => {
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-app.use('/utilisateur', userRoute);
-app.use('/administrateur', adminRoute);
-app.use('/administrateur', profRoute);
+app.use('/api/utilisateur', userRoute);
+app.use('/api/administrateur', adminRoute);
+app.use('/api/profeseur', profRoute);
 
 
 const PORT = process.env.PORT || 8888;

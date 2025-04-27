@@ -1,5 +1,5 @@
 const express = require('express');
-const connection = require('../connection');
+const connection = require('../../../backend/connection');
 const router = express.Router();
 require('dotenv').config();
 
@@ -67,6 +67,7 @@ async function chargerDonneesDepuisDB() {
             resolve([]);
           } else {
             resolve(results.map(p => ({ 
+              id: p.id_prof.toString(), // Uniformiser avec 'id' pour la cohérence
               id_prof: p.id_prof.toString(), 
               nom: p.nom,
               indisponibilites: [] 
@@ -90,8 +91,10 @@ async function chargerDonneesDepuisDB() {
             resolve([]);
           } else {
             resolve(results.map(s => ({ 
+              id: s.id_salle.toString(), // Uniformiser avec 'id' pour la cohérence
               id_salle: s.id_salle.toString(), 
-              capacité: s.capacité || 30
+              nom: s.nom || `Salle ${s.id_salle}`,
+              capacite: s.capacité || 30
             })));
           }
         });
@@ -101,32 +104,33 @@ async function chargerDonneesDepuisDB() {
         configuration.salles = salles;
       }
       
-      // Récupérer les classes
-      const classes = await new Promise((resolve, reject) => {
+      // Récupérer les classes (groupes)
+      const groupes = await new Promise((resolve, reject) => {
         connection.query('SELECT id_classe, nom, nbr_élèves FROM classe', (err, results) => {
           if (err) {
-            console.error("Erreur SQL (classes):", err);
+            console.error("Erreur SQL (classe):", err);
             resolve([]);
           } else if (!results || results.length === 0) {
-            console.log("Aucun classe trouvé dans la base de données");
+            console.log("Aucune classe trouvée dans la base de données");
             resolve([]);
           } else {
             resolve(results.map(g => ({ 
               id: g.id_classe.toString(), 
+              id_classe: g.id_classe.toString(),
               nom: g.nom,
-              nbr_élèves: g.nbr_élève || 20
+              effectif: g.nbr_élèves || 20 
             })));
           }
         });
       });
       
-      if (classes.length > 0) {
-        configuration.classes = classes;
+      if (groupes.length > 0) {
+        configuration.groupe = groupes; // Correction: groupe au lieu de classe
       }
       
       // Récupérer les matières
       const matieres = await new Promise((resolve, reject) => {
-        connection.query('SELECT id_matiere, nom , id_prof FROM matiere', (err, results) => {
+        connection.query('SELECT id_matiere, nom, id_prof FROM matiere', (err, results) => {
           if (err) {
             console.error("Erreur SQL (matières):", err);
             resolve([]);
@@ -135,9 +139,11 @@ async function chargerDonneesDepuisDB() {
             resolve([]);
           } else {
             resolve(results.map(m => ({ 
-              id_matiere: m.id_matiere.toString(), 
+              id: m.id_matiere.toString(),
+              id_matiere: m.id_matiere.toString(),
               nom: m.nom,
-              id_prof: m.id_prof || 2
+              professeur: m.id_prof ? m.id_prof.toString() : null,
+              duree: 2
             })));
           }
         });
@@ -146,31 +152,31 @@ async function chargerDonneesDepuisDB() {
       if (matieres.length > 0) {
         configuration.matieres = matieres;
       }
-      //récupérer créneau
       
+      // Récupérer les créneaux
       const creneaux = await new Promise((resolve, reject) => {
-      connection.query('SELECT id_créneau, jour, h_début, h_fin FROM creneau', (err, results) => {
-       if (err) {
-          console.error("Erreur SQL (créneaux):", err);
-           resolve([]);
-        } else if (!results || results.length === 0) {
-             console.log("Aucun créneau trouvé dans la base de données");
-             resolve([]);
-        } else {
-                resolve(results.map(c => ({
-                      id_créneau: c.id_créneau.toString(),
-                      jour: c.jour,
-                      h_debut: c.h_début, 
-                      h_fin: c.h_fin
-      })));
-    }
-  });
-});
+        connection.query('SELECT id_créneau, jour, h_début, h_fin FROM creneau', (err, results) => {
+          if (err) {
+            console.error("Erreur SQL (creneaux):", err);
+            resolve([]);
+          } else if (!results || results.length === 0) {
+            console.log("Aucun creneau trouvé dans la base de données");
+            resolve([]);
+          } else {
+            resolve(results.map(c => ({
+              id: c.id_créneau.toString(),
+              id_creneau: c.id_créneau.toString(),
+              jour: c.jour,
+              heureDebut: parseInt(c.h_début),
+              heureFin: parseInt(c.h_fin)
+            })));
+          }
+        });
+      });
 
-if (creneaux.length > 0) {
-  configuration.creneaux = creneaux;
-}
-
+      if (creneaux.length > 0) {
+        configuration.creneaux = creneaux;
+      }
       
     } catch (dbError) {
       console.error("Erreur lors de l'accès à la base de données:", dbError);
@@ -185,7 +191,7 @@ if (creneaux.length > 0) {
   }
 }
 
-// sauvegarder l'emploi du temps généré dans la base de données
+// Sauvegarder l'emploi du temps généré dans la base de données
 async function sauvegarderEmploiDuTemps(emploiDuTemps) {
   try {
     // Vérifier si la table seance existe
@@ -205,11 +211,11 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
       return false;
     }
     
-    // Supprimer les anciens seance
+    // Supprimer les anciens seances
     await new Promise((resolve, reject) => {
       connection.query('DELETE FROM seance', (err, results) => {
         if (err) {
-          console.error("Erreur lors de la suppression des anciens seance:", err);
+          console.error("Erreur lors de la suppression des anciens seances:", err);
           reject(err);
         } else {
           resolve(results);
@@ -217,22 +223,48 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
       });
     });
     
-    // Insérer les nouveaux seance
+    // Insérer les nouveaux seances
     for (const seance of emploiDuTemps.seance) {
-      await new Promise((resolve, reject) => {
-        connection.query(
-          'INSERT INTO seance (id_matiere,id_professeur,id_salle,id_classe, jour,id_créneau) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          [seance.matiere, seance.professeur, seance.salle, seance.classe, seance.creneaux],
-          (err, results) => {
-            if (err) {
-              console.error("Erreur lors de l'insertion d'un seance:", err);
-              reject(err);
-            } else {
-              resolve(results);
-            }
+      try {
+        // Déterminer le créneau horaire approprié si les créneaux existent
+        let idCreneau = null;
+        if (emploiDuTemps.creneaux && emploiDuTemps.creneaux.length > 0) {
+          // Rechercher un créneau correspondant au jour et aux heures
+          const creneauTrouve = emploiDuTemps.creneaux.find(c => 
+            c.jour === seance.jour && 
+            c.heureDebut <= seance.heureDebut && 
+            c.heureFin >= seance.heureFin
+          );
+          
+          if (creneauTrouve) {
+            idCreneau = creneauTrouve.id_creneau;
           }
-        );
-      });
+        }
+        
+        await new Promise((resolve, reject) => {
+          // Adaptez cette requête selon la structure exacte de votre table seance
+          const query = idCreneau 
+            ? 'INSERT INTO seance (id_matiere, id_professeur, id_salle, id_classe, jour, id_creneau) VALUES (?, ?, ?, ?, ?, ?)'
+            : 'INSERT INTO seance (id_matiere, id_professeur, id_salle, id_classe, jour, heure_debut, heure_fin) VALUES (?, ?, ?, ?, ?, ?, ?)';
+          
+          const params = idCreneau 
+            ? [seance.matiere, seance.professeur, seance.salle, seance.groupe, seance.jour, idCreneau]
+            : [seance.matiere, seance.professeur, seance.salle, seance.groupe, seance.jour, seance.heureDebut, seance.heureFin];
+          
+          connection.query(query, params, (err, results) => {
+            if (err) {
+              console.error("Erreur lors de l'insertion d'une séance:", err);
+              // Continue malgré l'erreur
+              resolve(false);
+            } else {
+              resolve(true);
+            }
+          });
+        });
+      } catch (seanceError) {
+        console.error('Erreur lors du traitement d\'une séance:', seanceError);
+        // Continue avec la prochaine séance
+      }
     }
     
     return true;
@@ -262,7 +294,7 @@ router.get('/generate-automatic', async (req, res) => {
     const configuration = await chargerDonneesDepuisDB();
     
     // Log de la configuration
-    console.log(`Configuration chargée: ${configuration.professeurs.length} professeurs, ${configuration.salles.length} salles, ${configuration.classes.length} classes, ${configuration.matieres.length} matières`);
+    console.log(`Configuration chargée: ${configuration.professeurs.length} professeurs, ${configuration.salles.length} salles, ${configuration.groupe.length} groupes, ${configuration.matieres.length} matières`);
     
     // Générer l'emploi du temps
     console.log("Génération de l'emploi du temps...");
@@ -285,8 +317,8 @@ router.get('/generate-automatic', async (req, res) => {
         estValide: resultat.estValide,
         statistiques: {
           nombreGenerations: resultat.statistiques.generation,
-          fitnessInitial: resultat.statistiques.meilleuresSolutions[0].fitness,
-          fitnessFinal: resultat.statistiques.meilleuresSolutions[resultat.statistiques.meilleuresSolutions.length - 1].fitness
+          fitnessInitial: resultat.statistiques.meilleuresSolutions[0]?.fitness || 0,
+          fitnessFinal: resultat.statistiques.meilleuresSolutions[resultat.statistiques.meilleuresSolutions.length - 1]?.fitness || 0
         },
         sauvegardeDansDB: sauvegarde
       }
@@ -314,6 +346,29 @@ router.get('/params', (req, res) => {
     },
     exempleUtilisation: "/api/admin/generate-automatic?population=100&generations=100&save=true"
   });
+});
+
+// Ajout d'une route pour récupérer la configuration actuelle
+router.get('/configuration', async (req, res) => {
+  try {
+    const configuration = await chargerDonneesDepuisDB();
+    res.status(200).json({
+      success: true,
+      data: {
+        professeurs: configuration.professeurs.length,
+        salles: configuration.salles.length,
+        groupes: configuration.groupe.length,
+        matieres: configuration.matieres.length,
+        creneaux: configuration.creneaux ? configuration.creneaux.length : 0
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la récupération de la configuration",
+      error: error.message
+    });
+  }
 });
 
 module.exports = router;

@@ -1,5 +1,4 @@
-
-const critiries = require('./critiries');
+const criteres = require('./critiries');
 const edt = require('./edt');
 
 class AlgorithmeGenetique {
@@ -25,7 +24,7 @@ class AlgorithmeGenetique {
       const individu = generateur();
       this.population.push({
         edt: individu,
-        fitness: critiries.evaluerFitness(individu)
+        fitness: criteres.evaluerFitness(individu)
       });
     }
     this.trierPopulation();
@@ -76,7 +75,7 @@ class AlgorithmeGenetique {
           if (nouvellePopulation.length < this.taillePopulation) {
             nouvellePopulation.push({
               edt: enfant,
-              fitness: critiries.evaluerFitness(enfant)
+              fitness: criteres.evaluerFitness(enfant)
             });
           }
         });
@@ -135,14 +134,14 @@ class AlgorithmeGenetique {
   // Croisement de deux emplois du temps
   croisement(parent1, parent2) {
     
-    // Pour simplifier, on échange une partie des seance entre les deux parents
+    // Pour simplifier, on échange une partie des seances entre les deux parents
     const enfant1 = this.cloner(parent1);
     const enfant2 = this.cloner(parent2);
     
     // Point de croisement aléatoire
     const pointCroisement = Math.floor(Math.random() * parent1.seance.length);
     
-    // Pour enfant1, prendre les seance de parent1 jusqu'au point puis ceux de parent2
+    // Pour enfant1, prendre les seances de parent1 jusqu'au point puis ceux de parent2
     enfant1.seance = [
       ...parent1.seance.slice(0, pointCroisement),
       ...parent2.seance.slice(pointCroisement)
@@ -169,15 +168,16 @@ class AlgorithmeGenetique {
         
         switch (typeMutation) {
           case 0: // Changer l'heure de début
-            seance.heureDebut = 8 + Math.floor(Math.random() * 10); // Entre 8h et 17h
-            seance.heureFin = seance.heureDebut + (seance.heureFin - seance.heureDebut);
-            break;
+             const duree = seance.heureFin - seance.heureDebut;
+             seance.heureDebut = 8 + Math.floor(Math.random() * 10);
+             seance.heureFin = seance.heureDebut + duree;
+             break;
           case 1: // Changer le jour
             const jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
             seance.jour = jours[Math.floor(Math.random() * jours.length)];
             break;
           case 2: // Changer la salle
-            seance.salle = 'Salle' + (Math.floor(Math.random() * edtMute.salles.length) + 1);
+            seance.salle = edtMute.salles[Math.floor(Math.random() * edtMute.salles.length)].id;
             break;
         }
       }
@@ -187,8 +187,17 @@ class AlgorithmeGenetique {
   }
   // Cloner un emploi du temps pour éviter les modifications par référence
   cloner(edt) {
-    const clone = new edt(); // Recrée une instance
-    Object.assign(clone, JSON.parse(JSON.stringify(edt))); // Copie les données
+    const clone = new edt.constructor();
+    
+    // Copier les propriétés simples
+    clone.professeurs = [...edt.professeurs];
+    clone.groupe = [...edt.groupe];
+    clone.salles = [...edt.salles];
+    clone.matieres = [...edt.matieres];
+    
+    // Copie profonde du tableau des séances
+    clone.seance = edt.seance.map(s => ({...s}));
+    
     return clone;
   }
   
