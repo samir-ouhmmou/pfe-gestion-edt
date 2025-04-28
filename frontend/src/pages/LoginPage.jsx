@@ -70,9 +70,14 @@ const LoginPage = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md"
         >
-          <div>
+          {/* Logo Section */}
+          <div className="flex flex-col items-center">
             <div className="flex justify-center">
-              <School className="h-12 w-12 text-lime-600" />
+              <img
+                src="/imagehome.png"
+                alt="Logo de l'école"
+                className="h-16 w-16 object-contain" // Taille légèrement augmentée
+              />
             </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Connectez-vous à votre compte
@@ -82,16 +87,21 @@ const LoginPage = () => {
             </p>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
-                </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded"
+            >
+              <div className="flex items-center">
+                <ExclamationCircleIcon className="h-5 w-5 text-red-500 mr-2" />
+                <p className="text-sm text-red-700">{error}</p>
               </div>
-            </div>
+            </motion.div>
           )}
 
+          {/* Login Form */}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -104,7 +114,7 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 focus:z-10 sm:text-sm"
                   placeholder="Adresse email"
                 />
               </div>
@@ -118,7 +128,7 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 focus:z-10 sm:text-sm"
                   placeholder="Mot de passe"
                 />
               </div>
@@ -126,7 +136,7 @@ const LoginPage = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <a href="#" className="font-medium text-green-600 hover:text-green-500">
+                <a href="#" className="font-medium text-lime-600 hover:text-lime-500">
                   Mot de passe oublié ?
                 </a>
               </div>
@@ -136,36 +146,25 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-lime-500 hover:bg-lime-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 disabled:bg-lime-400"
+                className="group relative w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-lime-600 hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 disabled:bg-lime-400 transition-colors duration-200"
               >
-                {isLoading && <Loader className="animate-spin h-5 w-5 mr-2" />}
-                Se connecter
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Connexion en cours...
+                  </>
+                ) : "Se connecter"}
               </button>
             </div>
           </form>
-
-          <div className="mt-4">
-            {/* <p className="text-sm text-gray-600 mb-2">Comptes de démonstration :</p> */}
-            {/* <div className="flex space-x-2">
-              <button
-                onClick={() => setExampleCredentials('teacher')}
-                className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-800"
-              >
-                Professeur
-              </button>
-              <button
-                onClick={() => setExampleCredentials('admin')}
-                className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-800"
-              >
-                Administrateur
-              </button>
-            </div> */}
-          </div>
         </motion.div>
-      </div>
+      </div >
 
       <Footer />
-    </div>
+    </div >
   );
 };
 
