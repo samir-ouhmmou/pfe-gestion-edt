@@ -66,7 +66,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="flex-1 flex items-center justify-center py-5 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,11 +76,15 @@ const LoginPage = () => {
           {/* Logo Section */}
           <div className="flex flex-col items-center">
             <div className="flex justify-center">
+<<<<<<< HEAD
               <img
                 src="/imagehome.png"
                 alt="Logo de l'école"
                 className="h-16 w-16 object-contain" // Taille légèrement augmentée
               />
+=======
+              <img src='/logo.png' alt="logo de la platforme" className="h-40 w-50" />
+>>>>>>> a95a3855377083af388014b49c125df1855a0c61
             </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Connectez-vous à votre compte

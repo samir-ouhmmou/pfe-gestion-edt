@@ -10,7 +10,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
+<<<<<<< HEAD
               <School className="h-6 w-6 text-lime-500" />
+=======
+              <img src="/logo.png" alt="logo de projet" className="h-15 w-16 " />
+>>>>>>> a95a3855377083af388014b49c125df1855a0c61
               <span className="text-xl font-bold">Nawabigh</span>
             </div>
             <p className="text-gray-400 mb-4">
@@ -77,8 +81,13 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-lime-400 mr-2" />
+<<<<<<< HEAD
                 <a href="mailto:contact@nawabigh.ma" className="text-gray-400 hover:text-white transition-colors">
                   contact@nawabigh.ma
+=======
+                <a href="mailto:contact@schooltimetable.fr" className="text-gray-400 hover:text-white transition-colors">
+                  contact@Nawabigh.ma
+>>>>>>> a95a3855377083af388014b49c125df1855a0c61
                 </a>
               </li>
             </ul>

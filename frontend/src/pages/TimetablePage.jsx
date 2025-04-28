@@ -64,7 +64,7 @@ const TimetablePage = () => {
     doc.setFontSize(10);
     doc.text(`Généré le: ${today.toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
     
-    doc.setFontSize(12);
+    doc.setFontSize(7);
     doc.setTextColor(0, 0, 0);
     
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
