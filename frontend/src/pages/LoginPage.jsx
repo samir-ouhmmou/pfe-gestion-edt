@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Header from '../Components/common/Header';
 import Footer from '../Components/common/Footer';
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+
 // import  Loader  from 'lucide-react';
 
 const LoginPage = () => {
@@ -19,37 +22,38 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
+  
     try {
-      const reponse = await fetch('http://localhost:8888/api/utilisateur/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-
-        body: JSON.stringify({ email, mot_de_passe, role }),
-
+      const response = await axios.post('http://localhost:8888/api/utilisateur/login', {
+        email,
+        mot_de_passe,
+        role,
       });
-
-      const data = await reponse.json();
-
-      if (reponse.ok) {
-        localStorage.setItem('token', data.token);
-        // Redirection selon le rôle
-        if (role === 'admin') {
-          navigate('/admin');
-        } else if (role === 'teacher') {
-          navigate('/teacher');
-        }
-      } else {
-        setErreur(data.message || 'Erreur de connexion');
+  
+      const data = response.data; // Axios met directement la réponse dans .data
+  
+      localStorage.setItem('token', data.token);
+  
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'teacher') {
+        navigate('/teacher');
       }
+  
     } catch (error) {
-      setErreur('Une erreur est survenue');
+      if (error.response) {
+        // Erreur renvoyée par le backend
+        setError(error.response.data.message || 'Erreur de connexion');
+      } else {
+        // Erreur réseau
+        setError('Une erreur est survenue');
+      }
     } finally {
-      setIsLoading(false); // Fin de chargement
+      setIsLoading(false);
     }
   };
+  
+
 
 
   // const setExampleCredentials = (type) => {
