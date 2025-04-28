@@ -10,8 +10,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <School className="h-6 w-6 text-lime-500" />
-              <span className="text-xl font-bold">SchoolTimetable</span>
+              <img src="/logo.png" alt="logo de projet" className="h-15 w-16 " />
+              <span className="text-xl font-bold">Nawabigh</span>
             </div>
             <p className="text-gray-400 mb-4">
               Solution automatisée de gestion des emplois du temps pour les écoles primaires.
@@ -78,7 +78,7 @@ const Footer = () => {
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-lime-400 mr-2" />
                 <a href="mailto:contact@schooltimetable.fr" className="text-gray-400 hover:text-white transition-colors">
-                  schooltimetable@gmail.com
+                  contact@Nawabigh.ma
                 </a>
               </li>
             </ul>
@@ -86,7 +86,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-6 text-center text-gray-400">
-          <p>&copy; {currentYear} SchoolTimetable. Tous droits réservés.</p>
+          <p>&copy; {currentYear} Nawabigh. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

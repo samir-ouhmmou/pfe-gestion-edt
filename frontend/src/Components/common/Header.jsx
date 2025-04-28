@@ -40,8 +40,8 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <School className="h-8 w-8 text-lime-600" />
-          <span className="text-xl font-bold ">SchoolTimetable</span>
+          <img src='/logo.png' alt="logo de projet" className="h-25 w-20 " />
+          <span className="text-xl font-bold font-BreeSerif ">Nawabigh</span>
         </Link>
 
         {/* Desktop Navigation */}
