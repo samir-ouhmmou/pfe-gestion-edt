@@ -124,8 +124,8 @@ const LoginPage = () => {
                 <input
                   id="mot_de_passe"
                   name="mot_de_passe"
-                  type="mot_de_passe"
-                  autoComplete="current-mot_de_passe"
+                  type="password"
+                  autoComplete="current-password"
                   required
                   value={mot_de_passe}
                   onChange={(e) => setPassword(e.target.value)}
