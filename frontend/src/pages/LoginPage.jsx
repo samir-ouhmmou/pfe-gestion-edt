@@ -20,33 +20,44 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
-        if (email === 'admin@school.com') {
+      const reponse = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password: motDePasse, role }),
+      });
+
+      const data = await reponse.json();
+
+      if (reponse.ok) {
+        localStorage.setItem('token', data.token);
+        // Redirection selon le rôle
+        if (role === 'admin') {
           navigate('/admin');
-        } else {
+        } else if (role === 'teacher') {
           navigate('/teacher');
         }
       } else {
-        setError('Identifiants incorrects. Veuillez réessayer.');
+        setErreur(data.message || 'Erreur de connexion');
       }
-    } catch (err) {
-      setError('Une erreur est survenue. Veuillez réessayer.');
-      console.error(err);
+    } catch (error) {
+      setErreur('Une erreur est survenue');
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Fin de chargement
     }
   };
+  
 
-  const setExampleCredentials = (type) => {
-    if (type === 'teacher') {
-      setEmail('teacher@school.com');
-      setPassword('password');
-    } else {
-      setEmail('admin@school.com');
-      setPassword('password');
-    }
-  };
+  // const setExampleCredentials = (type) => {
+  //   if (type === 'teacher') {
+  //     setEmail('teacher@school.com');
+  //     setPassword('password');
+  //   } else {
+  //     setEmail('admin@school.com');
+  //     setPassword('password');
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -134,8 +145,8 @@ const LoginPage = () => {
           </form>
 
           <div className="mt-4">
-            <p className="text-sm text-gray-600 mb-2">Comptes de démonstration :</p>
-            <div className="flex space-x-2">
+            {/* <p className="text-sm text-gray-600 mb-2">Comptes de démonstration :</p> */}
+            {/* <div className="flex space-x-2">
               <button
                 onClick={() => setExampleCredentials('teacher')}
                 className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-800"
@@ -148,7 +159,7 @@ const LoginPage = () => {
               >
                 Administrateur
               </button>
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </div>
