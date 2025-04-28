@@ -55,7 +55,7 @@ router.delete('/delete',(req,res) => {
 
 //api pour modifier un classe dans une base de donnée 
 router.put('/update', (req, res) => {
-    const id_classe = req.query.id_classe;
+    const id_classe= req.query.id;
     const { nom,niveau,nbr_élèves,id_salle } = req.body; 
     
     var query = "UPDATE classe SET nom = ?, niveau = ?, nbr_élèves = ?, id_salle = ? WHERE id_classe = ?";

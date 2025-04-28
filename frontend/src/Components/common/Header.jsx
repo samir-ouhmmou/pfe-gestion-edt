@@ -34,43 +34,39 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+        }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <School className="h-8 w-8 text-lime-600" />
-          <span className="text-xl font-bold ">SchoolTimetable</span>
+          <span className="text-xl font-bold ">Nawabigh</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link
             to="/"
-            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
-              location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
-            }`}
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
+              }`}
           >
             Accueil
           </Link>
           <Link
             to="/timetable"
-            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
-              location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
-            }`}
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
+              }`}
           >
             Emploi du Temps
           </Link>
           <Link
             to="/about"
-            className={`text-sm font-medium transition-colors hover:text-lime-500 ${
-              location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
-            }`}
+            className={`text-sm font-medium transition-colors hover:text-lime-500 ${location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
+              }`}
           >
             En Savoir Plus
           </Link>
-          
+
           {isAuthenticated ? (
             <div className="relative group">
               <button className="flex items-center space-x-1 text-sm font-medium text-gray-700 hover:text-lime-500">
@@ -124,31 +120,28 @@ const Header = () => {
             <Link
               to="/"
               onClick={closeMenu}
-              className={`block py-2 text-base font-medium ${
-                location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
-              }`}
+              className={`block py-2 text-base font-medium ${location.pathname === '/' ? 'text-lime-500' : 'text-gray-700'
+                }`}
             >
               Accueil
             </Link>
             <Link
               to="/timetable"
               onClick={closeMenu}
-              className={`block py-2 text-base font-medium ${
-                location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
-              }`}
+              className={`block py-2 text-base font-medium ${location.pathname === '/timetable' ? 'text-lime-500' : 'text-gray-700'
+                }`}
             >
               Emploi du Temps
             </Link>
             <Link
               to="/about"
               onClick={closeMenu}
-              className={`block py-2 text-base font-medium ${
-                location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
-              }`}
+              className={`block py-2 text-base font-medium ${location.pathname === '/about' ? 'text-lime-500' : 'text-gray-700'
+                }`}
             >
               En Savoir Plus
             </Link>
-            
+
             {isAuthenticated ? (
               <>
                 <Link

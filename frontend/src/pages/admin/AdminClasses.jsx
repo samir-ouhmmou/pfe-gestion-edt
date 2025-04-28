@@ -16,12 +16,12 @@ const AdminClasses = () => {
     levelId: '',
   });
   const [formErrors, setFormErrors] = useState({});
-  
+
   // Filter classes based on search term
-  const filteredClasses = classesList.filter(cls => 
+  const filteredClasses = classesList.filter(cls =>
     cls.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +29,7 @@ const AdminClasses = () => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error for this field
     if (formErrors[name]) {
       setFormErrors(prev => {
@@ -39,45 +39,45 @@ const AdminClasses = () => {
       });
     }
   };
-  
+
   // Validate form data
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.name.trim()) {
       errors.name = 'Le nom est requis';
     }
-    
+
     if (!formData.levelId) {
       errors.levelId = 'Le niveau est requis';
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  
+
   // Handle submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     if (editClassId) {
       // Update existing class
-      setClassesList(prev => 
-        prev.map(cls => 
-          cls.id === editClassId 
-            ? { 
-                ...cls, 
-                name: formData.name, 
-                levelId: formData.levelId 
-              } 
+      setClassesList(prev =>
+        prev.map(cls =>
+          cls.id === editClassId
+            ? {
+              ...cls,
+              name: formData.name,
+              levelId: formData.levelId
+            }
             : cls
         )
       );
-      
+
       setEditClassId(null);
     } else {
       // Add new class
@@ -86,20 +86,20 @@ const AdminClasses = () => {
       const levelClasses = classesList.filter(c => c.levelId === formData.levelId);
       const suffix = String.fromCharCode(65 + levelClasses.length); // A, B, C, etc.
       const newId = `${formData.levelId}-${suffix.toLowerCase()}`;
-      
+
       const newClass = {
         id: newId,
         name: formData.name,
         levelId: formData.levelId,
       };
-      
+
       setClassesList(prev => [...prev, newClass]);
     }
-    
+
     // Reset form
     resetForm();
   };
-  
+
   // Reset form and hide it
   const resetForm = () => {
     setFormData({
@@ -110,7 +110,7 @@ const AdminClasses = () => {
     setShowAddForm(false);
     setEditClassId(null);
   };
-  
+
   // Start editing a class
   const handleEdit = (cls) => {
     setFormData({
@@ -119,28 +119,28 @@ const AdminClasses = () => {
     });
     setEditClassId(cls.id);
     setShowAddForm(true);
-    
+
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   // Delete a class
   const handleDelete = (id) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette classe ?')) {
       setClassesList(prev => prev.filter(cls => cls.id !== id));
     }
   };
-  
+
   // Get level name by ID
   const getLevelName = (levelId) => {
     const level = classLevels.find(l => l.id === levelId);
     return level ? level.name : 'Inconnu';
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-20 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
@@ -153,14 +153,14 @@ const AdminClasses = () => {
               <span className="text-gray-800">Gestion des classes</span>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-gray-900 flex items-center">
                 <BookOpen className="h-6 w-6 mr-2 text-blue-600" />
                 Gestion des classes
               </h1>
-              
+
               <button
                 onClick={() => {
                   setShowAddForm(!showAddForm);
@@ -173,7 +173,7 @@ const AdminClasses = () => {
                     setFormErrors({});
                   }
                 }}
-                className="px-4 py-2 flex items-center bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 flex items-center bg-green-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 {showAddForm ? (
                   <>
@@ -188,7 +188,7 @@ const AdminClasses = () => {
                 )}
               </button>
             </div>
-            
+
             {showAddForm && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -200,7 +200,7 @@ const AdminClasses = () => {
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
                     {editClassId ? 'Modifier la classe' : 'Ajouter une nouvelle classe'}
                   </h2>
-                  
+
                   <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
@@ -219,7 +219,7 @@ const AdminClasses = () => {
                           <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
                         )}
                       </div>
-                      
+
                       <div>
                         <label htmlFor="levelId" className="block text-sm font-medium text-gray-700 mb-1">
                           Niveau*
@@ -229,7 +229,7 @@ const AdminClasses = () => {
                           name="levelId"
                           value={formData.levelId}
                           onChange={handleInputChange}
-                          className={`block w-full px-4 py-2 border ${formErrors.levelId ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                          className={`block w-full px-4 py-2 border ${formErrors.levelId ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-green-500 focus:border-green-500`}
                         >
                           <option value="">Sélectionner un niveau</option>
                           {classLevels.map(level => (
@@ -243,7 +243,7 @@ const AdminClasses = () => {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex justify-end space-x-3">
                       <button
                         type="button"
@@ -254,7 +254,7 @@ const AdminClasses = () => {
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                       >
                         {editClassId ? 'Mettre à jour' : 'Ajouter'}
                       </button>
@@ -263,7 +263,7 @@ const AdminClasses = () => {
                 </div>
               </motion.div>
             )}
-            
+
             <div className="flex items-center mb-6">
               <div className="relative flex-1">
                 <input
@@ -284,7 +284,7 @@ const AdminClasses = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="overflow-x-auto">
               {filteredClasses.length > 0 ? (
                 <table className="min-w-full divide-y divide-gray-200">
@@ -349,18 +349,18 @@ const AdminClasses = () => {
               )}
             </div>
           </div>
-          
+
           {/* Levels Management Section */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
               <BookOpen className="h-5 w-5 mr-2 text-blue-600" />
               Niveaux scolaires
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {classLevels.map(level => {
                 const levelClassCount = classesList.filter(cls => cls.levelId === level.id).length;
-                
+
                 return (
                   <div key={level.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="flex justify-between items-center">
@@ -377,7 +377,7 @@ const AdminClasses = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
