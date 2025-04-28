@@ -7,22 +7,22 @@ import Footer from '../Components/common/Footer';
 const HomePage = () => {
   const features = [
     {
-      icon: <Calendar className="h-10 w-10 text-blue-600" />,
+      icon: <Calendar className="h-10 w-10 text-lime-600" />,
       title: "Génération Automatique",
       description: "Création automatique des emplois du temps en tenant compte de toutes les contraintes.",
     },
     {
-      icon: <Users className="h-10 w-10 text-blue-600" />,
+      icon: <Users className="h-10 w-10 text-lime-600" />,
       title: "Gestion des Enseignants",
       description: "Interface dédiée pour la gestion des disponibilités et des absences des professeurs.",
     },
     {
-      icon: <School className="h-10 w-10 text-blue-600" />,
+      icon: <School className="h-10 w-10 text-lime-600" />,
       title: "Gestion des Classes",
       description: "Organisation optimale des emplois du temps par niveau et par classe.",
     },
     {
-      icon: <Settings className="h-10 w-10 text-blue-600" />,
+      icon: <Settings className="h-10 w-10 text-lime-600" />,
       title: "Administration Facile",
       description: "Tableau de bord intuitif pour les administrateurs avec toutes les fonctionnalités nécessaires.",
     },
@@ -33,7 +33,7 @@ const HomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-24 lg:pt-28 pb-16 bg-gradient-to-br from-blue-900 to-blue-700 text-white">
+      <section className="pt-24 lg:pt-28 pb-16 bg-gradient-to-br from-gray-300 to-gray-90 text-noir">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center">
             <motion.div
@@ -45,20 +45,20 @@ const HomePage = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 Gestion Automatique des Emplois du Temps
               </h1>
-              <p className="text-lg md:text-xl text-blue-100 mb-8">
+              <p className="text-lg md:text-xl text-gray-600 mb-8">
                 La solution complète pour organiser efficacement les emplois du temps de votre école primaire.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link
                   to="/timetable"
-                  className="px-6 py-3 bg-white text-blue-800 font-medium rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 bg-lime-500 text-white  font-medium rounded-lg flex items-center justify-center hover:bg-lime-600 transition-colors"
                 >
                   Consulter l'emploi du temps
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/about"
-                  className="px-6 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors"
+                  className="px-6 py-3 bg-transparent border-2 bg-gray-300 border-gray- text-noir font-medium rounded-lg flex items-center justify-center hover:bg-gray-00 transition-colors"
                 >
                   En savoir plus
                 </Link>
@@ -72,7 +72,7 @@ const HomePage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <img
-                src="https://images.pexels.com/photos/8612921/pexels-photo-8612921.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src="/homeemage.jpeg"
                 alt="Élèves à l'école"
                 loading="lazy"
                 className="rounded-lg shadow-xl w-full h-auto max-h-96 object-cover"
@@ -113,24 +113,23 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="py-16 bg-gray-100">
         <div className="container mx-auto px-4">
-          <div className="bg-blue-800 rounded-xl p-8 md:p-12 shadow-lg">
+          <div className="bg-gray-100 rounded-xl p-8 md:p-12 shadow-lg">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-white mb-6">
+              <h2 className="text-3xl font-bold text-noir mb-6">
                 Prêt à simplifier la gestion de vos emplois du temps?
               </h2>
-              <p className="text-lg text-blue-100 mb-8">
+              <p className="text-lg text-gray-500 mb-8">
                 Consultez les emplois du temps ou connectez-vous pour accéder à toutes les fonctionnalités.
               </p>
               <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link
                   to="/timetable"
-                  className="px-6 py-3 bg-white text-blue-800 font-medium rounded-lg hover:bg-gray-100 transition-colors"
-                >
+                  className="px-6 py-3 bg-lime-500 text-white font-medium rounded-lg hover:bg-lime-600 transition-colors">
                   Consulter les emplois du temps
                 </Link>
                 <Link
                   to="/login"
-                  className="px-6 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors"
+                  className="px-6 py-3 bg-transparent border-2 border-gray-300  bg-gray-400 text-noir font-medium rounded-lg hover:bg-gray-300 transition-colors"
                 >
                   Se connecter
                 </Link>

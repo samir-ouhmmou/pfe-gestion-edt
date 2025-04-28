@@ -8,6 +8,7 @@ import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import TeacherProfile from './pages/teacher/TeacherProfile';
 import TeacherTimetable from './pages/teacher/TeacherTimetable';
 import TeacherAbsence from './pages/teacher/TeacherAbsence';
+import TeacherRéservation  from './pages/teacher/TeacherRéservation'
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTimetable from './pages/admin/AdminTimetable';
 import AdminTeachers from './pages/admin/AdminTeachers';
@@ -47,7 +48,11 @@ function App() {
               <TeacherAbsence />
             </ProtectedRoute>
           } />
-          
+           <Route path="/teacher/reservation" element={
+            <ProtectedRoute role="teacher">
+              <TeacherRéservation />
+            </ProtectedRoute>
+          } />
           {/* Admin Routes */}
           <Route path="/admin" element={
             <ProtectedRoute role="admin">
