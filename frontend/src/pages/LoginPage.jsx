@@ -4,12 +4,13 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Header from '../Components/common/Header';
 import Footer from '../Components/common/Footer';
-import { School, Loader } from 'lucide-react';
+// import  Loader  from 'lucide-react';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [mot_de_passe, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [role, setRole] = useState('admin');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -25,7 +26,9 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+
         body: JSON.stringify({ email, mot_de_passe, role }),
+
       });
 
       const data = await reponse.json();
@@ -104,6 +107,16 @@ const LoginPage = () => {
           {/* Login Form */}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
+              <div className="input-group">
+                <label>Type d'utilisateur</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="admin">Admin</option>
+                  <option value="teacher">Teacher</option>
+                </select>
+              </div>
               <div>
                 <label htmlFor="email-address" className="sr-only">Adresse email</label>
                 <input
@@ -119,14 +132,14 @@ const LoginPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="sr-only">Mot de passe</label>
+                <label htmlFor="mot_de_passe" className="sr-only">Mot de passe</label>
                 <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
+                  id="mot_de_passe"
+                  name="mot_de_passe"
+                  type="mot_de_passe"
+                  autoComplete="current-mot_de_passe"
                   required
-                  value={password}
+                  value={mot_de_passe}
                   onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 focus:z-10 sm:text-sm"
                   placeholder="Mot de passe"
