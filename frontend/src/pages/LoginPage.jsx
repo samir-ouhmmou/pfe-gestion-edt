@@ -10,6 +10,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [mot_de_passe, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [role, setRole] = useState('admin');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -94,7 +95,17 @@ const LoginPage = () => {
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
-              <div>
+              <div className="input-group">
+                <label>Type d'utilisateur</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="admin">Admin</option>
+                  <option value="teacher">Teacher</option>
+                </select>
+            </div>
+                  <div>
                 <label htmlFor="email-address" className="sr-only">Adresse email</label>
                 <input
                   id="email-address"
