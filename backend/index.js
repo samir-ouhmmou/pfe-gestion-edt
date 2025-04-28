@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const userRoute = require('./rootes/utilisateur');
 const adminRoute = require('./rootes/admin/administrateur');
 const profRoute = require('./rootes/prof/professeur');
+const classeRoute = require('./rootes/admin/classe');
+const salleRoute = require('./rootes/admin/salle');
+const profsRoute = require('./rootes/admin/profs');
 const app = express();
 
 // Middleware
@@ -30,6 +33,9 @@ app.get('/', (req, res) => {
 app.use('/api/utilisateur', userRoute);
 app.use('/api/administrateur', adminRoute);
 app.use('/api/profeseur', profRoute);
+app.use('/api/classes',classeRoute);
+app.use('/api/salles',salleRoute);
+app.use('/api/profs',profsRoute);
 
 
 const PORT = process.env.PORT || 8888;
