@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Header from '../Components/common/Header';
@@ -13,7 +14,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [mot_de_passe, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [role, setRole] = useState('admin');
+  const [role, setRole] = useState('administrateur');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,24 +23,39 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-  
+
     try {
-      const response = await axios.post('http://localhost:8888/api/utilisateur/login', {
-        email,
-        mot_de_passe,
-        role,
+      console.log("awal mohawala");
+      const instance = axios.create({
+        timeout: 10000 // 10 secondes
       });
-  
-      const data = response.data; // Axios met directement la réponse dans .data
-  
+      console.log("tani mohawala");
+      console.log("nsift request mohawala");
+
+      const response = await instance.post('/api/utilisateur/login', {
+        email,
+        mot_de_passe
+      });
+      console.log("jani responce");
+
+      const data = response.data;
       localStorage.setItem('token', data.token);
-  
-      if (role === 'admin') {
+
+      console.log("9bl ndecodé token ");
+      // Utiliser le rôle retourné par le backend
+      const decoded = jwtDecode(data.token); // ← Utilise jwt-decode
+      console.log("Token décodé:", decoded);
+      // kay3erf le role dyalo 
+      if (decoded.role === 'administrateur') {
+        console.log("dkhl l admin");
         navigate('/admin');
-      } else if (role === 'teacher') {
+        // window.location.href = '/admin';
+        console.log("ghadi l admin");
+      } else if (decoded.role === 'professeur') {
         navigate('/teacher');
       }
-  
+
+
     } catch (error) {
       if (error.response) {
         // Erreur renvoyée par le backend
@@ -52,7 +68,7 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
-  
+
 
 
 

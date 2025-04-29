@@ -19,7 +19,7 @@ router.post('/login', (req, res) => {
         return res.status(400).json({ message: "L'email et le mot de passe sont requis" });
     }
     
-    query = "select email, mot_de_passe, nom from utilisateur where email = ?";
+    query = "SELECT email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?";
     connection.query(query, [utilisateur.email], (err, results) => {
         if (err) {
             return res.status(500).json(err);
