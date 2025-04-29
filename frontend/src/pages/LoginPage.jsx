@@ -71,17 +71,6 @@ const LoginPage = () => {
 
 
 
-
-  // const setExampleCredentials = (type) => {
-  //   if (type === 'teacher') {
-  //     setEmail('teacher@school.com');
-  //     setPassword('password');
-  //   } else {
-  //     setEmail('admin@school.com');
-  //     setPassword('password');
-  //   }
-  // };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -125,7 +114,7 @@ const LoginPage = () => {
           {/* Login Form */}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
-              <div className="input-group">
+              {/* <div className="input-group">
                 <label>Type d'utilisateur</label>
                 <select
                   value={role}
@@ -134,7 +123,7 @@ const LoginPage = () => {
                   <option value="admin">Admin</option>
                   <option value="teacher">Teacher</option>
                 </select>
-              </div>
+              </div> */}
               <div>
                 <label htmlFor="email-address" className="sr-only">Adresse email</label>
                 <input

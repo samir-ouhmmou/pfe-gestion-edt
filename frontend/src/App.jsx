@@ -29,9 +29,10 @@ function App() {
 
         {/* Teacher Routes */}
         <Route path="/teacher" element={
-          <ProtectedRoute role="teacher">
-            <TeacherDashboard />
-          </ProtectedRoute>
+          // <ProtectedRoute role="teacher">
+
+          // </ProtectedRoute>
+          <TeacherDashboard />
         } />
         <Route path="/teacher/profile" element={
           <ProtectedRoute role="teacher">
