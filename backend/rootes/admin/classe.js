@@ -18,6 +18,7 @@ router.post('/add', (req,res) => {
 
 });
 
+
 //api pour récupérer tous les classes que jai dans ma base de donnée 
 router.get('/get', (req, res) => {
     var query = "select * from classe";

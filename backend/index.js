@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/utilisateur', userRoute);
 app.use('/api/administrateur', adminRoute);
-app.use('/api/profeseur', profRoute);
+app.use('/api/professeur', profRoute);
 app.use('/api/classes',classeRoute);
 app.use('/api/salles',salleRoute);
 app.use('/api/profs',profsRoute);
