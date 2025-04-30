@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, UserCircle, AlertTriangle, HomeIcon } from 'lucide-react';
+import { Calendar, Building , AlertTriangle, HomeIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
@@ -57,7 +57,7 @@ const TeacherDashboard = () => {
                 <div className="flex flex-col items-center mb-6">
                   <div className="w-24 h-24 rounded-full overflow-hidden mb-4">
                     <img 
-                      src={teacher.image || "https://images.pexels.com/photos/3184302/pexels-photo-3184302.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"} 
+                      src={teacher.image || "/image1.jpeg"} 
                       alt={teacher.name} 
                       className="w-full h-full object-cover"
                     />
@@ -80,7 +80,7 @@ const TeacherDashboard = () => {
                 <div className="mt-6 space-y-3">
                   <Link
                     to="/teacher/profile"
-                    className="block w-full py-2 px-4 text-center bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                    className="block w-full py-2 px-4 text-center bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                   >
                     Modifier mon profil
                   </Link>
@@ -102,8 +102,8 @@ const TeacherDashboard = () => {
               className="w-full md:w-2/3 lg:w-3/4"
             >
               {/* Welcome Banner */}
-              <div className="bg-gradient-to-r from-gray-400 to-gray-500 rounded-lg shadow-md p-6 text-white mb-6">
-                <h1 className="text-2xl font-bold mb-2">Bienvenue, {teacher.name}</h1>
+              <div className=" bg-gradient-to-r from-gray-700 to-lime-500 rounded-lg shadow-md p-6 text-white mb-6">
+                <h1 className="text-2xl font-bold  mb-2">Bienvenue, {teacher.name}</h1>
                 <p className="text-blue-100">
                   Gérez votre emploi du temps et vos absences depuis votre espace personnel.
                 </p>
@@ -167,7 +167,7 @@ const TeacherDashboard = () => {
                 </div>
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <AlertTriangle className="h-5 w-5 mr-2 text-lime-600" />
+                    <Building  className="h-5 w-5 mr-2 text-lime-600" />
                     Réservation 
                   </h2>
                   <p className="text-gray-600 mb-4">

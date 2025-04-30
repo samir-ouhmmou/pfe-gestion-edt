@@ -39,16 +39,16 @@ const TeacherTimetable = () => {
     doc.text(`Généré le: ${today.toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
     
     // Add table headers
-    doc.setFontSize(12);
+    doc.setFontSize(9);
     doc.setTextColor(0, 0, 0);
     
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     let startY = 30;
-    let startX = 20;
+    let startX = 10;
     
     // Draw days row
     doc.setFillColor(235, 235, 235);
-    doc.rect(startX, startY, 170, 10, 'F');
+    doc.rect(startX, startY, 190, 10, 'F');
     doc.setFont('helvetica', 'bold');
     doc.text('Horaire', startX + 20, startY + 6, { align: 'center' });
     
@@ -75,7 +75,7 @@ const TeacherTimetable = () => {
       // Alternate row colors
       if (index % 2 === 0) {
         doc.setFillColor(245, 245, 245);
-        doc.rect(startX, startY, 170, 15, 'F');
+        doc.rect(startX, startY, 190, 15, 'F');
       }
       
       doc.text(timeLabel, startX + 20, startY + 8, { align: 'center' });
@@ -115,7 +115,7 @@ const TeacherTimetable = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/teacher" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/teacher" className="inline-flex items-center text-sm text-lime-600 hover:text-lime-700">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -139,7 +139,7 @@ const TeacherTimetable = () => {
             className="bg-white rounded-lg shadow-md p-6"
           >
             <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Calendar className="h-6 w-6 mr-2 text-blue-600" />
+              <Calendar className="h-6 w-6 mr-2 text-lime-600" />
               Mon emploi du temps
             </h1>
             
@@ -169,7 +169,7 @@ const TeacherTimetable = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {['08:30-10:00', '10:15-11:45', '13:30-15:00', '15:15-16:45'].map((timeSlot, index) => {
+                    {['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'].map((timeSlot, index) => {
                       const [startTime, endTime] = timeSlot.split('-');
                       return (
                         <tr key={timeSlot} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -180,15 +180,6 @@ const TeacherTimetable = () => {
                             const entry = timetableData.find(
                               (e) => e.day === day && e.startTime === startTime && e.endTime === endTime
                             );
-                            
-                            // Wednesday afternoon is empty in French elementary schools
-                            if (day === 'Mercredi' && (timeSlot === '13:30-15:00' || timeSlot === '15:15-16:45')) {
-                              return (
-                                <td key={`${day}-${timeSlot}`} className="py-3 px-4 border-b border-gray-200 text-center text-sm text-gray-400 bg-gray-100">
-                                  -
-                                </td>
-                              );
-                            }
                             
                             return (
                               <td key={`${day}-${timeSlot}`} className="py-3 px-4 border-b border-gray-200 text-center text-sm">

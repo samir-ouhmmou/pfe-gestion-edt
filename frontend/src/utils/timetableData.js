@@ -111,10 +111,10 @@ const rooms = [
 const generateTimetableEntries = (classId) => {
   const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
   const timeslots = [
-    { start: '08:30', end: '10:00' },
-    { start: '10:15', end: '11:45' },
-    { start: '13:30', end: '15:00' },
-    { start: '15:15', end: '16:45' },
+      { start: '08:00', end: '10:00' },
+      { start: '10:30', end: '12:30' },
+      { start: '14:00', end: '16:00' },
+      { start: '16:30', end: '17:30' },
   ];
   
   const entries = [];
