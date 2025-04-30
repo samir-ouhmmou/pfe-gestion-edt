@@ -42,9 +42,9 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Gestion Automatique des Emplois du Temps
-              </h1>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 mb-6">
+                Nawabigh application de gestion des emplois du temps
+              </h2>
               <p className="text-lg md:text-xl text-gray-600 mb-8">
                 La solution complète pour organiser efficacement les emplois du temps de votre école primaire.
               </p>
@@ -72,10 +72,10 @@ const HomePage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <img
-                src="/homeemage.jpeg"
+                src="/cal.png"
                 alt="Élèves à l'école"
                 loading="lazy"
-                className="rounded-lg shadow-xl w-full h-auto max-h-96 object-cover"
+                className="rounded-lg w-full h-auto max-h-92 object-cover transform transition-transform duration-300 hover:scale-105"
               />
             </motion.div>
           </div>

@@ -25,12 +25,9 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      console.log("awal mohawala");
       const instance = axios.create({
         timeout: 10000 // 10 secondes
       });
-      console.log("tani mohawala");
-      console.log("nsift request mohawala");
 
       const response = await instance.post('/api/utilisateur/login', {
         email,
@@ -40,8 +37,6 @@ const LoginPage = () => {
 
       const data = response.data;
       localStorage.setItem('token', data.token);
-
-      console.log("9bl ndecodé token ");
       // Utiliser le rôle retourné par le backend
       const decoded = jwtDecode(data.token); // ← Utilise jwt-decode
       console.log("Token décodé:", decoded);
