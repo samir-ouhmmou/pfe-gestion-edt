@@ -39,8 +39,8 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
+          <img src='/logo.png' alt="logo de projet" className="h-20 w-20 " />
 
-          <img src='/logo.png' alt="logo de projet" className="h-16 w-14 " />
           <span className="text-xl font-bold font-BreeSerif ">Nawabigh</span>
 
         </Link>
