@@ -35,24 +35,24 @@ function App() {
           <TeacherDashboard />
         } />
         <Route path="/teacher/profile" element={
-          <ProtectedRoute role="teacher">
+          // <ProtectedRoute role="teacher">
             <TeacherProfile />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/teacher/timetable" element={
-          <ProtectedRoute role="teacher">
+          // <ProtectedRoute role="teacher">
             <TeacherTimetable />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/teacher/absence" element={
-          <ProtectedRoute role="teacher">
+          // <ProtectedRoute role="teacher">
             <TeacherAbsence />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/teacher/reservation" element={
-          <ProtectedRoute role="teacher">
+          // <ProtectedRoute role="teacher">
             <TeacherRéservation />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         {/* Admin Routes */}
         <Route path="/admin" element={
@@ -61,24 +61,24 @@ function App() {
           <AdminDashboard />
         } />
         <Route path="/admin/timetable" element={
-          <ProtectedRoute role="admin">
+          // <ProtectedRoute role="admin">
             <AdminTimetable />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/admin/teachers" element={
-          <ProtectedRoute role="admin">
+          // <ProtectedRoute role="admin">
             <AdminTeachers />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/admin/classes" element={
-          <ProtectedRoute role="admin">
+          // <ProtectedRoute role="admin">
             <AdminClasses />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
         <Route path="/admin/rooms" element={
-          <ProtectedRoute role="admin">
+          // <ProtectedRoute role="admin">
             <AdminRooms />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         } />
       </Routes>
 

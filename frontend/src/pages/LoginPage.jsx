@@ -14,9 +14,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [mot_de_passe, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [role, setRole] = useState('administrateur');
+  // const [role, setRole] = useState('administrateur');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

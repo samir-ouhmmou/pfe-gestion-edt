@@ -158,7 +158,7 @@ const AdminRooms = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/admin" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/admin" className="inline-flex items-center text-sm text-lime-500 hover:text-lime-600">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -170,7 +170,7 @@ const AdminRooms = () => {
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <Building className="h-6 w-6 mr-2 text-blue-600" />
+                <Building className="h-6 w-6 mr-2 text-lime-600" />
                 Gestion des salles
               </h1>
               
@@ -182,7 +182,7 @@ const AdminRooms = () => {
                     resetForm();
                   }
                 }}
-                className="px-4 py-2 flex items-center bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 flex items-center bg-lime-500 text-white rounded-md hover:bg-lime-600 transition-colors"
               >
                 {showAddForm ? (
                   <>
@@ -292,7 +292,7 @@ const AdminRooms = () => {
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700"
                       >
                         {editRoomId ? 'Mettre à jour' : 'Ajouter'}
                       </button>
@@ -345,7 +345,7 @@ const AdminRooms = () => {
                         <td className="px-6 py-4 text-sm">
                           <button
                             onClick={() => handleEdit(room)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-lime-600 hover:text-lime-800"
                           >
                             <Edit className="h-5 w-5" />
                           </button>

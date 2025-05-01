@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, School, LogOut, User } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 
@@ -39,8 +39,8 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-
           <img src='/logo.png' alt="logo de projet" className="h-20 w-20 " />
+
           <span className="text-xl font-bold font-BreeSerif ">Nawabigh</span>
 
         </Link>

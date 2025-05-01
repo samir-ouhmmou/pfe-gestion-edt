@@ -15,7 +15,7 @@ const TeacherProfile = () => {
     name: teacherData.name,
     email: teacherData.email,
     phone: teacherData.phone || '+33 1 23 45 67 89',
-    subject: teacherData.subject,
+    subject: teacherData.subjects,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -102,7 +102,7 @@ const TeacherProfile = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/teacher" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/teacher" className="inline-flex items-center text-sm text-lime-500 hover:text-lime-600">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -134,13 +134,13 @@ const TeacherProfile = () => {
                 <div className="flex flex-col items-center">
                   <div className="w-32 h-32 rounded-full overflow-hidden mb-4">
                     <img 
-                      src={teacherData.image || "https://images.pexels.com/photos/3184302/pexels-photo-3184302.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"} 
+                      src="/image1.jpeg"
                       alt={teacher.name} 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <h2 className="text-xl font-bold text-gray-900">{teacher.name}</h2>
-                  <p className="text-blue-600 mb-4">{teacher.subject}</p>
+                  <p className="text-gray-600 mb-4">{teacher.subject}</p>
                   
                   <div className="w-full space-y-3 mt-4">
                     <div className="flex items-center">
@@ -165,7 +165,7 @@ const TeacherProfile = () => {
                         setIsEditing(!isEditing);
                         setShowPasswordForm(false);
                       }}
-                      className="block w-full py-2 px-4 text-center bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      className="block w-full py-2 px-4 text-center bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                     >
                       {isEditing ? 'Annuler' : 'Modifier mon profil'}
                     </button>
@@ -193,7 +193,7 @@ const TeacherProfile = () => {
               {isEditing ? (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                    <User className="h-5 w-5 mr-2 text-blue-600" />
+                    <User className="h-5 w-5 mr-2 text-lime-600" />
                     Modifier mon profil
                   </h3>
                   
@@ -269,7 +269,7 @@ const TeacherProfile = () => {
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                       >
                         Sauvegarder
                       </button>
@@ -279,7 +279,7 @@ const TeacherProfile = () => {
               ) : showPasswordForm ? (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                    <Key className="h-5 w-5 mr-2 text-blue-600" />
+                    <Key className="h-5 w-5 mr-2 text-lime-600" />
                     Changer mon mot de passe
                   </h3>
                   
@@ -347,7 +347,7 @@ const TeacherProfile = () => {
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                       >
                         Mettre à jour le mot de passe
                       </button>
@@ -357,7 +357,7 @@ const TeacherProfile = () => {
               ) : (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                    <User className="h-5 w-5 mr-2 text-blue-600" />
+                    <User className="h-5 w-5 mr-2 text-lime-600" />
                     Informations personnelles
                   </h3>
                   
@@ -368,7 +368,7 @@ const TeacherProfile = () => {
                   <div className="flex justify-end space-x-4 mt-6">
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                     >
                       Modifier
                     </button>

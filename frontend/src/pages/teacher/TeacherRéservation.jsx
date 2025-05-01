@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
 import { rooms, getRoomTimetable } from '../../utils/timetableData';
-import { Calendar, HomeIcon, AlertTriangle, Clock, Trash2, CheckCircle, X } from 'lucide-react';
+import { Calendar, HomeIcon, Building , Clock, Trash2, CheckCircle, X } from 'lucide-react';
 
 const RoomReservation = () => {
   const { user } = useAuth();
@@ -122,7 +122,7 @@ const RoomReservation = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/teacher" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/teacher" className="inline-flex items-center text-sm text-lime-600 hover:text-lime-800">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -143,12 +143,12 @@ const RoomReservation = () => {
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                    <AlertTriangle className="h-5 w-5 mr-2 text-blue-600" />
+                    <Building  className="h-5 w-5 mr-2 text-lime-500" />
                     Mes réservations de salle
                   </h2>
                   <button
                     onClick={() => setIsReserving(!isReserving)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                    className="px-4 py-2 bg-lime-500 text-white rounded-md hover:bg-lime-600 transition-colors flex items-center"
                   >
                     {isReserving ? (
                       <>
@@ -157,7 +157,7 @@ const RoomReservation = () => {
                       </>
                     ) : (
                       <>
-                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        <Calendar className="h-4 w-4 mr-2" />
                         Réserver une salle
                       </>
                     )}
@@ -262,7 +262,7 @@ const RoomReservation = () => {
                       <div className="flex justify-end">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                         >
                           Soumettre
                         </button>

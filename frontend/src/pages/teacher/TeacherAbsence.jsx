@@ -118,7 +118,7 @@ const TeacherAbsence = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/teacher" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/teacher" className="inline-flex items-center text-sm text-lime-500 hover:text-lime-600">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -139,12 +139,12 @@ const TeacherAbsence = () => {
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                    <AlertTriangle className="h-5 w-5 mr-2 text-blue-600" />
+                    <AlertTriangle className="h-5 w-5 mr-2 text-lime-600" />
                     Mes déclarations d'absence
                   </h2>
                   <button
                     onClick={() => setIsDeclaringAbsence(!isDeclaringAbsence)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                    className="px-4 py-2 bg-lime-500 text-white rounded-md hover:bg-lime-600 transition-colors flex items-center"
                   >
                     {isDeclaringAbsence ? (
                       <>
@@ -222,7 +222,7 @@ const TeacherAbsence = () => {
                         <div className="flex justify-end">
                           <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                            className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
                           >
                             Soumettre
                           </button>
@@ -300,7 +300,7 @@ const TeacherAbsence = () => {
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                  <Calendar className="h-5 w-5 mr-2 text-lime-600" />
                   Prochains cours
                 </h3>
 

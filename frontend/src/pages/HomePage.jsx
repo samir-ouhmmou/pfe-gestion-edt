@@ -58,7 +58,7 @@ const HomePage = () => {
                 </Link>
                 <Link
                   to="/about"
-                  className="px-6 py-3 bg-transparent border-2 bg-gray-300 border-gray- text-noir font-medium rounded-lg flex items-center justify-center hover:bg-gray-00 transition-colors"
+                  className="px-6 py-3 bg-transparent border-2 bg-white border-gray- text-noir font-medium rounded-lg flex items-center justify-center hover:bg-gray-400 transition-colors"
                 >
                   En savoir plus
                 </Link>
@@ -129,7 +129,7 @@ const HomePage = () => {
                 </Link>
                 <Link
                   to="/login"
-                  className="px-6 py-3 bg-transparent border-2 border-gray-300  bg-gray-400 text-noir font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                  className="px-6 py-3 bg-transparent border-2 border-gray-300  bg-gray-500 text-noir font-medium rounded-lg hover:bg-gray-300 transition-colors"
                 >
                   Se connecter
                 </Link>

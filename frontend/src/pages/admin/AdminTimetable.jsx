@@ -95,7 +95,7 @@ const AdminTimetable = () => {
     
     // Add table
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
-    const timeSlots = ['08:30-10:00', '10:15-11:45', '13:30-15:00', '15:15-16:45'];
+    const timeSlots = ['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'];
     
     let startY = 30;
     
@@ -153,7 +153,7 @@ const AdminTimetable = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/admin" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/admin" className="inline-flex items-center text-sm text-lime-500 hover:text-lime-600">
                 <HomeIcon className="h-4 w-4 mr-1" />
                 Tableau de bord
               </Link>
@@ -164,7 +164,7 @@ const AdminTimetable = () => {
             <button
               onClick={handleGenerateTimetable}
               disabled={isGenerating}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+              className="flex items-center px-4 py-2 bg-lime-500 text-white rounded-md hover:bg-lime-600 transition-colors disabled:bg-lime-400"
             >
               {isGenerating ? (
                 <>
@@ -194,7 +194,7 @@ const AdminTimetable = () => {
           
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Calendar className="h-6 w-6 mr-2 text-blue-600" />
+              <Calendar className="h-6 w-6 mr-2 text-lime-600" />
               Gestion des emplois du temps
             </h1>
             
@@ -252,7 +252,7 @@ const AdminTimetable = () => {
             
             {isLoading ? (
               <div className="flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lime-600"></div>
               </div>
             ) : timetableData.length > 0 ? (
               <div className="overflow-x-auto">
