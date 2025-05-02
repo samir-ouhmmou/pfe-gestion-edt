@@ -151,7 +151,7 @@ const LoginPage = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <a href="#" className="font-medium text-lime-600 hover:text-lime-500">
+                <a href="/forgot-password" className="font-medium text-lime-600 hover:text-lime-500">
                   Mot de passe oublié ?
                 </a>
               </div>
