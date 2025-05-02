@@ -16,6 +16,7 @@ import AdminTeachers from './pages/admin/AdminTeachers';
 import AdminClasses from './pages/admin/AdminClasses';
 import AdminRooms from './pages/admin/AdminRooms';
 import ProtectedRoute from './Components/auth/ProtectedRoute';
+import EditTimetable from './pages/admin/EditTimetable';
 
 function App() {
   return (
@@ -67,6 +68,11 @@ function App() {
             <AdminTimetable />
           // </ProtectedRoute>
         } />
+        <Route path="/admin/timetablemanuelle" element={
+            // <ProtectedRoute role="admin">
+              <EditTimetable />
+            // </ProtectedRoute> 
+          } />
         <Route path="/admin/teachers" element={
           // <ProtectedRoute role="admin">
             <AdminTeachers />
