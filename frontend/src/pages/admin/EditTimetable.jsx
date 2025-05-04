@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Calendar, HomeIcon, Save, X, Check} from 'lucide-react';
+import { Calendar, HomeIcon, Save, X, Check, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import jsPDF from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
@@ -18,7 +19,6 @@ const EditTimetable = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
 
-
   const handleLevelChange = (e) => {
     const levelId = e.target.value;
     setSelectedLevel(levelId);
@@ -33,15 +33,14 @@ const EditTimetable = () => {
     setTimetable({});
   };
 
-  // 🔁 Charger l'emploi du temps existant
+  // Charger l'emploi du temps existant
   useEffect(() => {
     if (selectedClass) {
-      axios.get(`http://localhost:8888/api/timetable/${selectedClass}`)
+      axios
+        .get(`http://localhost:8888/api/timetable/${selectedClass}`)
         .then((res) => {
-          const timetableData = res.data;
           const parsed = {};
-
-          timetableData.forEach(entry => {
+          res.data.forEach((entry) => {
             if (!parsed[entry.day]) parsed[entry.day] = {};
             parsed[entry.day][entry.time] = {
               subject: entry.subject,
@@ -49,14 +48,11 @@ const EditTimetable = () => {
               roomId: entry.roomId
             };
           });
-
           setTimetable(parsed);
         })
         .catch((err) => {
-          console.error("Erreur de chargement :", err);
+          console.error('Erreur de chargement :', err);
         });
-      const existingTimetable = getTimetableForClass(selectedClass); // à adapter
-       setTimetable(existingTimetable); // remplir le tableau
     }
   }, [selectedClass]);
 
@@ -73,10 +69,9 @@ const EditTimetable = () => {
     }));
   };
 
-  // 💾 Enregistrement (modification)
   const handleSave = () => {
     if (!selectedClass) return;
-  
+
     const entries = [];
     days.forEach((day) => {
       timeSlots.forEach((slot) => {
@@ -88,13 +83,14 @@ const EditTimetable = () => {
             time: slot,
             subject: data.subject,
             teacherId: data.teacherId,
-            roomId: data.roomId
+            roomId: data.roomId,
           });
         }
       });
     });
-  
-    axios.post('http://localhost:5000/api/timetable/save', entries)
+
+    axios
+      .post('http://localhost:5000/api/timetable/save', entries)
       .then(() => {
         setShowSuccess(true);
         setShowError(false);
@@ -106,7 +102,58 @@ const EditTimetable = () => {
         setTimeout(() => setShowError(false), 4000);
       });
   };
-  
+
+  const exportToPDF = () => {
+    if (!selectedClass) return;
+
+    const classObj = classes.find((c) => c.id === selectedClass);
+    const className = classObj ? classObj.name : 'Classe';
+
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text(`Emploi du temps - ${className}`, 105, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
+
+    let startY = 30;
+    doc.setFillColor(240, 240, 240);
+    doc.rect(10, startY, 190, 10, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Horaire', 15, startY + 6);
+
+    days.forEach((day, i) => {
+      doc.text(day, 45 + i * 30, startY + 6);
+    });
+
+    startY += 15;
+    doc.setFont('helvetica', 'normal');
+
+    timeSlots.forEach((timeSlot, rowIdx) => {
+      if (rowIdx % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+        doc.rect(10, startY - 5, 190, 20, 'F');
+      }
+
+      doc.text(timeSlot, 15, startY);
+      days.forEach((day, colIdx) => {
+        const cell = timetable[day]?.[timeSlot];
+        if (cell) {
+          const teacher = teachers.find((t) => t.id === cell.teacherId)?.name || '';
+          const subject = cell.subject || '';
+          doc.text(`${subject}`, 45 + colIdx * 30, startY);
+          doc.setFontSize(8);
+          doc.text(`${teacher}`, 45 + colIdx * 30, startY + 5);
+          doc.setFontSize(10);
+        }
+      });
+
+      startY += 20;
+    });
+
+    doc.save(`emploi-du-temps-${className}.pdf`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -126,7 +173,7 @@ const EditTimetable = () => {
 
             <button
               onClick={handleSave}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="flex items-center px-4 py-2 bg-lime-500 text-white rounded-md hover:bg-lime-600"
             >
               <Save className="h-4 w-4 mr-2" />
               Enregistrer
@@ -138,31 +185,31 @@ const EditTimetable = () => {
               <Calendar className="h-6 w-6 mr-2 text-lime-600" />
               Modifier manuellement l’emploi du temps
             </h2>
-            <AnimatePresence>
-            {showSuccess && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mb-6 bg-green-100 border-l-4 border-green-500 p-4 flex items-center rounded"
-              >
-                <Check className="h-5 w-5 text-green-600 mr-2" />
-                <p className="text-green-700">L'emploi du temps a été enregistré avec succès.</p>
-              </motion.div>
-            )}
 
-            {showError && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mb-6 bg-red-100 border-l-4 border-red-500 p-4 flex items-center rounded"
-              >
-                <X className="h-5 w-5 text-red-600 mr-2" />
-                <p className="text-red-700">Erreur lors de l'enregistrement. Veuillez réessayer.</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <AnimatePresence>
+              {showSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mb-6 bg-green-100 border-l-4 border-green-500 p-4 flex items-center rounded"
+                >
+                  <Check className="h-5 w-5 text-green-600 mr-2" />
+                  <p className="text-green-700">L'emploi du temps a été enregistré avec succès.</p>
+                </motion.div>
+              )}
+              {showError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mb-6 bg-red-100 border-l-4 border-red-500 p-4 flex items-center rounded"
+                >
+                  <X className="h-5 w-5 text-red-600 mr-2" />
+                  <p className="text-red-700">Erreur lors de l'enregistrement. Veuillez réessayer.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
@@ -197,6 +244,17 @@ const EditTimetable = () => {
                   ))}
                 </select>
               </div>
+
+              <div className="flex items-end">
+                <button
+                  onClick={exportToPDF}
+                  disabled={!selectedClass}
+                  className="w-full px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 flex items-center justify-center"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Exporter en PDF
+                </button>
+              </div>
             </div>
 
             {selectedClass && (
@@ -206,7 +264,9 @@ const EditTimetable = () => {
                     <tr className="bg-gray-100">
                       <th className="p-2 border">Horaire</th>
                       {days.map((day) => (
-                        <th key={day} className="p-2 border text-center">{day}</th>
+                        <th key={day} className="p-2 border text-center">
+                          {day}
+                        </th>
                       ))}
                     </tr>
                   </thead>
@@ -221,26 +281,36 @@ const EditTimetable = () => {
                               placeholder="Matière"
                               className="w-full border rounded px-2 py-1"
                               value={timetable[day]?.[timeSlot]?.subject || ''}
-                              onChange={(e) => handleCellChange(day, timeSlot, 'subject', e.target.value)}
+                              onChange={(e) =>
+                                handleCellChange(day, timeSlot, 'subject', e.target.value)
+                              }
                             />
                             <select
                               className="w-full border rounded px-2 py-1"
                               value={timetable[day]?.[timeSlot]?.teacherId || ''}
-                              onChange={(e) => handleCellChange(day, timeSlot, 'teacherId', e.target.value)}
+                              onChange={(e) =>
+                                handleCellChange(day, timeSlot, 'teacherId', e.target.value)
+                              }
                             >
                               <option value="">Professeur</option>
-                              {teachers.map((teacher) => (
-                                <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+                              {teachers.map((t) => (
+                                <option key={t.id} value={t.id}>
+                                  {t.name}
+                                </option>
                               ))}
                             </select>
                             <select
                               className="w-full border rounded px-2 py-1"
                               value={timetable[day]?.[timeSlot]?.roomId || ''}
-                              onChange={(e) => handleCellChange(day, timeSlot, 'roomId', e.target.value)}
+                              onChange={(e) =>
+                                handleCellChange(day, timeSlot, 'roomId', e.target.value)
+                              }
                             >
                               <option value="">Salle</option>
-                              {rooms.map((room) => (
-                                <option key={room.id} value={room.id}>{room.name}</option>
+                              {rooms.map((r) => (
+                                <option key={r.id} value={r.id}>
+                                  {r.name}
+                                </option>
                               ))}
                             </select>
                           </td>
@@ -255,7 +325,7 @@ const EditTimetable = () => {
           </div>
         </div>
       </main>
-
+      
       <Footer />
     </div>
   );
