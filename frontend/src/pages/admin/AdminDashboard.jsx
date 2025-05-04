@@ -138,7 +138,7 @@ const AdminDashboard = () => {
                     icon={<Settings className="h-10 w-10 text-emerald-600" />}
                     title="Gestion manuelle" 
                     description="Modifier manuellement les emplois du temps existants" 
-                    link="/admin/timetable"
+                    link="/admin/timetablemanuelle"
                   />
                   <ActionCard 
                     icon={<Users className="h-10 w-10 text-amber-600" />}
