@@ -13,7 +13,7 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: 'http://localhost:5173', // URL exacte de votre frontend
+  origin: 'http://localhost:5173', // URL de frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

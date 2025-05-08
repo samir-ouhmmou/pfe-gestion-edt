@@ -94,7 +94,7 @@ router.post('/forgotpassword', async (req, res) => {
       );
   
       // Envoi d'un lien de réinitialisation 
-      const resetLink = `http://localhost:8888/api/utilisateur/resetpassword?token=${resetToken}`;
+      const resetLink = `http://localhost:5173/login?token=${resetToken}`;
       
       await transporter.sendMail({
         from: `"NAWABIGH" <${process.env.EMAIL}>`,
@@ -144,7 +144,7 @@ router.post('/resetpassword', async (req, res) => {
 
     const utilisateur = utilisateurs[0];
 
-    // Vérifier si le token a expiré
+    // Vérifier si le token a expiré(khdam)
     if (new Date(utilisateur.token_expiration) < new Date()) {
       await connection.promise().query(
         'UPDATE utilisateur SET reset_token = NULL, token_expiration = NULL WHERE id_utilisateur = ?',
@@ -175,7 +175,7 @@ router.post('/resetpassword', async (req, res) => {
           'UPDATE professeur SET mot_de_pass = ? WHERE user_id = ?',
           [hashedPassword, utilisateur.id_utilisateur]
         );
-      } else if (role === 'administrateur') {
+      } else if (role === 'administrateur') {é
         await connection.promise().query(
           'UPDATE administrateur SET mot_de_pass = ? WHERE user_id = ?',
           [hashedPassword, utilisateur.id_utilisateur]
