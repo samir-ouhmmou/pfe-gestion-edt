@@ -5,6 +5,7 @@ const classLevels = [
   { id: 'ce2', name: 'CE2' },
   { id: 'cm1', name: 'CM1' },
   { id: 'cm2', name: 'CM2' },
+  { id: 'cm3', name: 'CM3' },
 ];
 
 // Mock data for classes
@@ -19,6 +20,8 @@ const classes = [
   { id: 'cm1-b', name: 'CM1 B', levelId: 'cm1' },
   { id: 'cm2-a', name: 'CM2 A', levelId: 'cm2' },
   { id: 'cm2-b', name: 'CM2 B', levelId: 'cm2' },
+  { id: 'cm3-a', name: 'CM3 A', levelId: 'cm3' },
+  { id: 'cm3-b', name: 'CM3 B', levelId: 'cm3' },
 ];
 
 // les cours possible
@@ -29,82 +32,50 @@ const availableSubjects = [
   'Histoire-Géographie',
   'Anglais',
   'Sport',
-  'Arts Plastiques',
-  'Musique',
+  'Islamique',
+  'Arabe',
+  'Informatique',
 ];
-
 // Mock data for teachers with multiple subjects
 const teachers = [
-  { 
-    id: 't1', 
-    name: 'Battou amal', 
-    email: 'amalbattou@school.com', 
-    subjects: ['Français', 'Histoire-Géographie'],
-    image: 'https://i.pinimg.com/736x/36/37/83/363783a778ac8127509ce8e6b07e1962.jpg'
-  },
-  { 
-    id: 't2', 
-    name: 'Ouhmmou samir', 
-    email: 'ouhmmousamir@school.com', 
-    subjects: ['Mathématiques', 'Sciences'],
-    image: 'https://images.pexels.com/photos/8617943/pexels-photo-8617943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
   { 
     id: 't3', 
     name: 'Machkour mustapha', 
     email: 'Machkour@school.com', 
     subjects: ['Sciences', 'Mathématiques'],
-    image: 'https://images.pexels.com/photos/3767392/pexels-photo-3767392.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+    image: '/image1.jpeg'
   },
-  { 
-    id: 't4', 
-    name: 'AbdellahBou', 
-    email: 'BoulouzAB@school.com', 
-    subjects: ['Histoire-Géographie', 'Français'],
-    image: 'https://images.pexels.com/photos/8422405/pexels-photo-8422405.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
+   
   { 
     id: 't5', 
     name: 'Amellal Youssef', 
     email: 'YoussefAmellal@school.com', 
     subjects: ['Anglais', 'Français'],
-    image: 'https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+    image: '/image1.jpeg'
   },
   { 
     id: 't6', 
     name: 'Brahim chakir', 
     email: 'chakirbrahim@school.com', 
     subjects: ['Sport', 'Sciences'],
-    image: 'https://images.pexels.com/photos/6325984/pexels-photo-6325984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+    image: '/image1.jpeg'
   },
-  { 
-    id: 't7', 
-    name: 'Hicham elmoubaraki', 
-    email: 'elmoubaraki@school.com', 
-    subjects: ['Arts Plastiques', 'Musique'],
-    image: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
-  { 
-    id: 't8', 
-    name: 'ayoub gouijjane', 
-    email: 'Ayoub123g@school.com', 
-    subjects: ['Musique', 'Arts Plastiques'],
-    image: 'https://images.pexels.com/photos/8535214/pexels-photo-8535214.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
+  
 ];
 
 // Mock data for rooms
 const rooms = [
-  { id: 'r1', name: 'Salle 101', capacity: 30, building: 'A', floor: 1 },
-  { id: 'r2', name: 'Salle 102', capacity: 30, building: 'A', floor: 1 },
-  { id: 'r3', name: 'Salle 103', capacity: 30, building: 'A', floor: 1 },
-  { id: 'r4', name: 'Salle 201', capacity: 30, building: 'A', floor: 2 },
-  { id: 'r5', name: 'Salle 202', capacity: 30, building: 'A', floor: 2 },
-  { id: 'r6', name: 'Salle 203', capacity: 30, building: 'A', floor: 2 },
-  { id: 'r7', name: 'Gymnase', capacity: 60, building: 'B', floor: 0 },
-  { id: 'r8', name: 'Salle d\'Arts', capacity: 30, building: 'B', floor: 1 },
-  { id: 'r9', name: 'Salle de Musique', capacity: 30, building: 'B', floor: 1 },
-  { id: 'r10', name: 'Bibliothèque', capacity: 45, building: 'C', floor: 1 },
+  { id: 's1', name: 'Salle 1', capacity: 30, building: 'A', floor: 1 },
+  { id: 's2', name: 'Salle 2', capacity: 30, building: 'A', floor: 1 },
+  { id: 's3', name: 'Salle 3', capacity: 30, building: 'A', floor: 1 },
+  { id: 's4', name: 'Salle 4', capacity: 30, building: 'A', floor: 2 },
+  { id: 's5', name: 'Salle 5', capacity: 30, building: 'A', floor: 2 },
+  { id: 's6', name: 'Salle 6', capacity: 30, building: 'A', floor: 2 },
+  { id: 's7', name: 'Salle 7', capacity: 30, building: 'A', floor: 2 },
+  { id: 's8', name: 'Gymnase', capacity: 60, building: 'B', floor: 0 },
+  // { id: 's9', name: 'Salle d\'Arts', capacity: 30, building: 'B', floor: 1 },
+  { id: 's10', name: 'Salle de Informatique', capacity: 30, building: 'B', floor: 1 },
+  { id: 's11', name: 'Bibliothèque', capacity: 45, building: 'C', floor: 1 },
 ];
 
 // Function to generate timetable entries
@@ -139,11 +110,11 @@ const generateTimetableEntries = (classId) => {
         room = rooms.find(r => r.name === 'Gymnase') || rooms[Math.floor(Math.random() * rooms.length)];
       } else if (subject === 'Arts Plastiques') {
         room = rooms.find(r => r.name === 'Salle d\'Arts') || rooms[Math.floor(Math.random() * rooms.length)];
-      } else if (subject === 'Musique') {
-        room = rooms.find(r => r.name === 'Salle de Musique') || rooms[Math.floor(Math.random() * rooms.length)];
+      } else if (subject === 'Informatique') {
+        room = rooms.find(r => r.name === 'Salle de Informatique')|| rooms[Math.floor(Math.random() * rooms.length)];
       } else {
         // For other subjects, use a standard classroom
-        const standardRooms = rooms.filter(r => !['Gymnase', 'Salle d\'Arts', 'Salle de Musique', 'Bibliothèque'].includes(r.name));
+        const standardRooms = rooms.filter(r => !['Gymnase', 'Salle d\'Arts', 'Salle de Informatique', 'Bibliothèque'].includes(r.name));
         room = standardRooms[Math.floor(Math.random() * standardRooms.length)];
       }
       

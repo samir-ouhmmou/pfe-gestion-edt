@@ -280,26 +280,36 @@ const AdminTimetable = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {['08:30-10:00', '10:15-11:45', '13:30-15:00', '15:15-16:45'].map((timeSlot) => (
-                      <tr key={timeSlot}>
-                        <td className="py-3 px-4 border-b text-sm text-gray-700">{timeSlot}</td>
-                        {['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'].map((day) => (
-                          <td key={day} className="py-3 px-4 border-b text-center text-sm text-gray-700">
-                            {timetableData.find(
-                              (entry) => entry.day === day && entry.startTime === timeSlot.split('-')[0] && entry.endTime === timeSlot.split('-')[1]
-                            ) ? (
-                              <>
-                                <div>{timetableData.find(entry => entry.day === day).subject}</div>
-                                <div className="text-xs text-gray-500">{getTeacherName(timetableData.find(entry => entry.day === day).teacherId)}</div>
-                              </>
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
+                        {['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'].map((timeSlot, index) => {
+                          const [startTime, endTime] = timeSlot.split('-');
+                          return (
+                            <tr key={timeSlot} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="py-3 px-4 border-b border-gray-200 text-sm text-gray-700">
+                                {startTime} - {endTime}
+                              </td>
+                              {['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'].map((day) => {
+                                const entry = timetableData.find(
+                                  (e) => e.day === day && e.startTime === startTime && e.endTime === endTime
+                                );
+                                
+                                return (
+                                  <td key={`${day}-${timeSlot}`} className="py-3 px-4 border-b border-gray-200 text-center text-sm">
+                                    {entry ? (
+                                      <div>
+                                        <p className="font-medium text-gray-800">{entry.subject}</p>
+                                        <p className="text-gray-600">{getTeacherName(entry.teacherId)}</p>
+                                        <p className="text-gray-500">{getRoomName(entry.roomId)}</p>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400">-</span>
+                                    )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
                 </table>
               </div>
             ) : (

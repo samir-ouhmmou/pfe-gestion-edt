@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthProvider';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AboutPage from './pages/AboutPage';
 import TimetablePage from './pages/TimetablePage';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/timetable" element={<TimetablePage />} />
 

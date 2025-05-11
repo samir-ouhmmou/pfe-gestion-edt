@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import Header from '../Components/common/Header';
+import Footer from '../Components/common/Footer';
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -20,7 +21,10 @@ const ForgotPassword = () => {
   };
 
   return (
+    <div>
+      <Header />
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Mot de passe oublié</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -47,6 +51,9 @@ const ForgotPassword = () => {
         {message && <p className="text-green-600 mt-4">{message}</p>}
         {error && <p className="text-red-600 mt-4">{error}</p>}
       </div>
+      
+    </div>
+    <Footer />
     </div>
   );
 };

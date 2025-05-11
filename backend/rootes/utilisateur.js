@@ -94,7 +94,7 @@ router.post('/forgotpassword', async (req, res) => {
       );
   
       // Envoi d'un lien de réinitialisation 
-      const resetLink = `http://localhost:5173/login?token=${resetToken}`;
+      const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
       
       await transporter.sendMail({
         from: `"NAWABIGH" <${process.env.EMAIL}>`,
