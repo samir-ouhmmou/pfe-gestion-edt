@@ -84,10 +84,6 @@ const Footer = () => {
                 <a href="mailto:contact@nawabigh.ma" className="text-gray-400 hover:text-white transition-colors">
                   contact@nawabigh.ma</a>
 
-                <a href="mailto:contact@schooltimetable.fr" className="text-gray-400 hover:text-white transition-colors">
-                  contact@Nawabigh.ma
-
-                </a>
               </li>
             </ul>
           </div>

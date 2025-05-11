@@ -30,7 +30,7 @@ const EmploiDuTemps = () => {
         });
 
         try {
-            const response = await fetch("http://localhost:5000/api/emploi-du-temps", { 
+            const response = await fetch("http://localhost:8888/api/emploi-du-temps", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(emploiData),

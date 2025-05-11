@@ -1,8 +1,9 @@
 import { Routes, Route } from 'react-router-dom';  // Ajoute BrowserRouter !!
-import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthProvider';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import ForgotPassword  from './pages/ForgotPassword';
+import ForgotPassword from './pages/ForgotPassword';
 import AboutPage from './pages/AboutPage';
 import TimetablePage from './pages/TimetablePage';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
@@ -39,22 +40,22 @@ function App() {
         } />
         <Route path="/teacher/profile" element={
           // <ProtectedRoute role="teacher">
-            <TeacherProfile />
+          <TeacherProfile />
           // </ProtectedRoute>
         } />
         <Route path="/teacher/timetable" element={
           // <ProtectedRoute role="teacher">
-            <TeacherTimetable />
+          <TeacherTimetable />
           // </ProtectedRoute>
         } />
         <Route path="/teacher/absence" element={
           // <ProtectedRoute role="teacher">
-            <TeacherAbsence />
+          <TeacherAbsence />
           // </ProtectedRoute>
         } />
         <Route path="/teacher/reservation" element={
           // <ProtectedRoute role="teacher">
-            <TeacherRéservation />
+          <TeacherRéservation />
           // </ProtectedRoute>
         } />
         {/* Admin Routes */}
@@ -65,27 +66,27 @@ function App() {
         } />
         <Route path="/admin/timetable" element={
           // <ProtectedRoute role="admin">
-            <AdminTimetable />
+          <AdminTimetable />
           // </ProtectedRoute>
         } />
         <Route path="/admin/timetablemanuelle" element={
-            // <ProtectedRoute role="admin">
-              <EditTimetable />
-            // </ProtectedRoute> 
-          } />
+          // <ProtectedRoute role="admin">
+          <EditTimetable />
+          // </ProtectedRoute> 
+        } />
         <Route path="/admin/teachers" element={
           // <ProtectedRoute role="admin">
-            <AdminTeachers />
+          <AdminTeachers />
           // </ProtectedRoute>
         } />
         <Route path="/admin/classes" element={
           // <ProtectedRoute role="admin">
-            <AdminClasses />
+          <AdminClasses />
           // </ProtectedRoute>
         } />
         <Route path="/admin/rooms" element={
           // <ProtectedRoute role="admin">
-            <AdminRooms />
+          <AdminRooms />
           // </ProtectedRoute>
         } />
       </Routes>

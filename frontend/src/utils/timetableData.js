@@ -21,7 +21,7 @@ const classes = [
   { id: 'cm2-b', name: 'CM2 B', levelId: 'cm2' },
 ];
 
-// Available subjects
+// les cours possible
 const availableSubjects = [
   'Français',
   'Mathématiques',
@@ -37,57 +37,57 @@ const availableSubjects = [
 const teachers = [
   { 
     id: 't1', 
-    name: 'Sophie Martin', 
-    email: 'sophie.martin@school.com', 
+    name: 'Battou amal', 
+    email: 'amalbattou@school.com', 
     subjects: ['Français', 'Histoire-Géographie'],
-    image: 'https://images.pexels.com/photos/3771807/pexels-photo-3771807.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+    image: 'https://i.pinimg.com/736x/36/37/83/363783a778ac8127509ce8e6b07e1962.jpg'
   },
   { 
     id: 't2', 
-    name: 'Thomas Dubois', 
-    email: 'thomas.dubois@school.com', 
+    name: 'Ouhmmou samir', 
+    email: 'ouhmmousamir@school.com', 
     subjects: ['Mathématiques', 'Sciences'],
     image: 'https://images.pexels.com/photos/8617943/pexels-photo-8617943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't3', 
-    name: 'Claire Leroy', 
-    email: 'claire.leroy@school.com', 
+    name: 'Machkour mustapha', 
+    email: 'Machkour@school.com', 
     subjects: ['Sciences', 'Mathématiques'],
     image: 'https://images.pexels.com/photos/3767392/pexels-photo-3767392.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't4', 
-    name: 'Pierre Moreau', 
-    email: 'pierre.moreau@school.com', 
+    name: 'AbdellahBou', 
+    email: 'BoulouzAB@school.com', 
     subjects: ['Histoire-Géographie', 'Français'],
     image: 'https://images.pexels.com/photos/8422405/pexels-photo-8422405.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't5', 
-    name: 'Marie Bernard', 
-    email: 'marie.bernard@school.com', 
+    name: 'Amellal Youssef', 
+    email: 'YoussefAmellal@school.com', 
     subjects: ['Anglais', 'Français'],
     image: 'https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't6', 
-    name: 'Antoine Petit', 
-    email: 'antoine.petit@school.com', 
+    name: 'Brahim chakir', 
+    email: 'chakirbrahim@school.com', 
     subjects: ['Sport', 'Sciences'],
     image: 'https://images.pexels.com/photos/6325984/pexels-photo-6325984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't7', 
-    name: 'Émilie Richard', 
-    email: 'emilie.richard@school.com', 
+    name: 'Hicham elmoubaraki', 
+    email: 'elmoubaraki@school.com', 
     subjects: ['Arts Plastiques', 'Musique'],
     image: 'https://images.pexels.com/photos/3796217/pexels-photo-3796217.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },
   { 
     id: 't8', 
-    name: 'Julien Robert', 
-    email: 'julien.robert@school.com', 
+    name: 'ayoub gouijjane', 
+    email: 'Ayoub123g@school.com', 
     subjects: ['Musique', 'Arts Plastiques'],
     image: 'https://images.pexels.com/photos/8535214/pexels-photo-8535214.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
   },

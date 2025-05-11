@@ -30,7 +30,7 @@ router.post('/login', (req, res) => {
         } 
         
         if (results[0].mot_de_passe === utilisateur.mot_de_passe) {
-            const response = {email: results[0].email, role: results[0].role};
+            const response = {email: results[0].email, role: results[0].role, nom : results[0].nom};
             const accestoken = jwt.sign(response, process.env.ACCES_TOKEN, {expiresIn: '10h'});
             return res.status(200).json({token: accestoken});
 
