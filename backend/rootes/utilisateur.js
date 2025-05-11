@@ -59,7 +59,7 @@ transporter.verify(function(error, success) {
 
 // Pour la partie mot de passe oublié
 router.post('/forgotpassword', async (req, res) => {
-    const { email, role } = req.body;
+    const { email } = req.body;
   
     // Validation des entrée
     if (!email || !validator.isEmail(email)) {
@@ -67,15 +67,15 @@ router.post('/forgotpassword', async (req, res) => {
     }
   
     //khasso ikhtar wahd fihom 
-    if (!['professeur', 'administrateur'].includes(role)) {
-      return res.status(400).json({ message: 'Rôle invalide. Choisissez un rôle valide.' });
-    }
+    // if (!['professeur', 'administrateur'].includes(role)) {
+    //   return res.status(400).json({ message: 'Rôle invalide. Choisissez un rôle valide.' });
+    // }
   
     try {
       // Vérification de l'utilisateur
       const [utilisateurs] = await connection.promise().query(
-        'SELECT id_utilisateur, email FROM utilisateur WHERE email = ? AND role = ?', 
-        [email, role]
+        'SELECT id_utilisateur, email FROM utilisateur WHERE email = ?', 
+        [email]
       );
   
       if (utilisateurs.length === 0) {
@@ -94,7 +94,7 @@ router.post('/forgotpassword', async (req, res) => {
       );
   
       // Envoi d'un lien de réinitialisation 
-      const resetLink = `http://localhost:8888/resetpassword?token=${resetToken}`;
+      const resetLink = `http://localhost:5173/login?token=${resetToken}`;
       
       await transporter.sendMail({
         from: `"NAWABIGH" <${process.env.EMAIL}>`,
@@ -121,9 +121,8 @@ router.post('/forgotpassword', async (req, res) => {
 
 // reset password
 router.post('/resetpassword', async (req, res) => {
-  const { token , newPassword } = req.body;
-
-
+  const  {newPassword} = req.body ;
+  let token = req.query.token;
   // Validation des entrées
   if (!token || !newPassword) {
     return res.status(400).json({ 
@@ -145,7 +144,7 @@ router.post('/resetpassword', async (req, res) => {
 
     const utilisateur = utilisateurs[0];
 
-    // Vérifier si le token a expiré
+    // Vérifier si le token a expiré(khdam)
     if (new Date(utilisateur.token_expiration) < new Date()) {
       await connection.promise().query(
         'UPDATE utilisateur SET reset_token = NULL, token_expiration = NULL WHERE id_utilisateur = ?',
@@ -176,7 +175,7 @@ router.post('/resetpassword', async (req, res) => {
           'UPDATE professeur SET mot_de_pass = ? WHERE user_id = ?',
           [hashedPassword, utilisateur.id_utilisateur]
         );
-      } else if (role === 'administrateur') {
+      } else if (role === 'administrateur') {é
         await connection.promise().query(
           'UPDATE administrateur SET mot_de_pass = ? WHERE user_id = ?',
           [hashedPassword, utilisateur.id_utilisateur]
