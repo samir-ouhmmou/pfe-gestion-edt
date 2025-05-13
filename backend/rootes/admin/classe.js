@@ -3,11 +3,11 @@ const connection = require('../../../backend/connection');
 const router = express.Router();
 require('dotenv').config();
 
-//api pour ajouter un classe a la base de donnée 
+//endpoint pour ajouter un classe a la base de donnée 
 router.post('/add', (req,res) => {
     let classes = req.body;
-    var query = "insert into classe(nom,niveau,nbr_élèves,id_salle) values(?,?,?,?)";
-    connection.query(query,[classes.nom,classes.niveau,classes.nbr_élèves,classes.id_salle],(err,results) => {
+    var query = "insert into classe(nom,niveau,id_salle) values(?,?,?)";
+    connection.query(query,[classes.nom,classes.niveau,classes.id_salle],(err,results) => {
         if(!err){
             return res.status(200).json({ message : "classe added succesfuly !!"});
         }
@@ -57,10 +57,10 @@ router.delete('/delete',(req,res) => {
 //api pour modifier un classe dans une base de donnée 
 router.put('/update', (req, res) => {
     const id_classe= req.query.id;
-    const { nom,niveau,nbr_élèves,id_salle } = req.body; 
+    const { nom,niveau,id_salle } = req.body; 
     
-    var query = "UPDATE classe SET nom = ?, niveau = ?, nbr_élèves = ?, id_salle = ? WHERE id_classe = ?";
-    connection.query(query, [nom, niveau,nbr_élèves,id_salle, id_classe], (err, results) => {
+    var query = "UPDATE classe SET nom = ?, niveau = ?, id_salle = ? WHERE id_classe = ?";
+    connection.query(query, [nom, niveau,id_salle, id_classe], (err, results) => {
         if (!err) {
             if (results.affectedRows === 0) {
                 return res.status(404).json({ message: "Aucun classe  trouvé avec cet id" });

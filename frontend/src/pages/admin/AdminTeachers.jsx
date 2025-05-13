@@ -1,172 +1,166 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
-import { teachers, availableSubjects } from '../../utils/timetableData';
-import { Users, HomeIcon, Plus, Edit, Trash2, Search, X, Mail, Phone } from 'lucide-react';
+import { availableSubjects } from '../../utils/timetableData';
+import { Users, HomeIcon, Plus, Edit, Trash2, Search, X, Mail, Phone, Loader2 } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8888/api';
 
 const AdminTeachers = () => {
-  const [teachersList, setTeachersList] = useState([...teachers]);
+  const [teachersList, setTeachersList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editTeacherId, setEditTeacherId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
+    nom: '',
     email: '',
-    subjects: [],
-    phone: '',
+    spécialités: [],
+    telephone: '',
   });
   const [formErrors, setFormErrors] = useState({});
 
-  // Filter teachers based on search term
-  const filteredTeachers = teachersList.filter(teacher => 
-    teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    teacher.subjects.some(subject => subject.toLowerCase().includes(searchTerm.toLowerCase()))
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  const fetchTeachers = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(`${API_URL}/profs/get`);
+      // Convertir les spécialités de chaîne à tableau si nécessaire
+      const formattedTeachers = response.data.map(teacher => ({
+        ...teacher,
+        spécialités: teacher.spécialité ? teacher.spécialité.split(' ') : []
+      }));
+      setTeachersList(formattedTeachers);
+      console.log('Données formatées:', formattedTeachers);
+    } catch (err) {
+      console.error("Erreur lors du chargement:", err);
+      setError("Erreur de chargement des données");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredTeachers = teachersList.filter(teacher =>
+    teacher.nom?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    teacher.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    teacher.spécialités?.some(sp => sp.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-
-    // Clear error for this field
     if (formErrors[name]) {
-      setFormErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
+      setFormErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
 
-  // Handle subject selection
-  const handleSubjectChange = (subject) => {
+  const handleSubjectChange = (spécialité) => {
     setFormData(prev => {
-      const subjects = prev.subjects.includes(subject)
-        ? prev.subjects.filter(s => s !== subject)
-        : [...prev.subjects, subject];
-      return { ...prev, subjects };
+      const newSpécialités = prev.spécialités.includes(spécialité)
+        ? prev.spécialités.filter(s => s !== spécialité)
+        : [...prev.spécialités, spécialité];
+      return { ...prev, spécialités: newSpécialités };
     });
-
-    // Clear subject error if at least one subject is selected
-    if (formErrors.subjects && formData.subjects.length > 0) {
-      setFormErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors.subjects;
-        return newErrors;
-      });
+    if (formErrors.spécialités) {
+      setFormErrors(prev => ({ ...prev, spécialités: undefined }));
     }
   };
 
-  // Validate form data
   const validateForm = () => {
     const errors = {};
-
-    if (!formData.name.trim()) {
-      errors.name = 'Le nom est requis';
-    }
-
+    if (!formData.nom.trim()) errors.nom = 'Nom requis';
     if (!formData.email.trim()) {
-      errors.email = 'L\'email est requis';
+      errors.email = 'Email requis';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Format d\'email invalide';
+      errors.email = 'Email invalide';
     }
-
-    if (formData.subjects.length === 0) {
-      errors.subjects = 'Au moins une matière est requise';
-    }
-
+    if (formData.spécialités.length === 0) errors.spécialités = 'Au moins une matière requise';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  // Handle add teacher
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    if (!validateForm()) {
-      return;
-    }
-
-    if (editTeacherId) {
-      // Update existing teacher
-      setTeachersList(prev => 
-        prev.map(teacher => 
-          teacher.id === editTeacherId 
-            ? { 
-                ...teacher, 
-                name: formData.name, 
-                email: formData.email, 
-                subjects: formData.subjects, 
-                phone: formData.phone 
-              } 
-            : teacher
-        )
-      );
-
-      setEditTeacherId(null);
-    } else {
-      // Add new teacher
-      const newTeacher = {
-        id: `t${teachersList.length + 1}`,
-        name: formData.name,
-        email: formData.email,
-        subjects: formData.subjects,
-        phone: formData.phone,
-        image: undefined // No image for new teachers
+    setIsLoading(true);
+    try {
+      const teacherData = {
+        ...formData,
+        spécialité: formData.spécialités.join(' ') // Convertir le tableau en chaîne pour l'API
       };
 
-      setTeachersList(prev => [...prev, newTeacher]);
+      if (editTeacherId) {
+        await axios.put(`${API_URL}/profs/update?id=${editTeacherId}`, teacherData);
+      } else {
+        await axios.post(`${API_URL}/profs/add`, teacherData);
+      }
+      fetchTeachers();
+      resetForm();
+    } catch (err) {
+      console.error("Erreur:", err);
+      alert(err.response?.data?.message || "Erreur lors de l'enregistrement");
+    } finally {
+      setIsLoading(false);
     }
-
-    // Reset form
-    resetForm();
   };
 
-  // Reset form and hide it
   const resetForm = () => {
     setFormData({
-      name: '',
+      nom: '',
       email: '',
-      subjects: [],
-      phone: '',
+      spécialités: [],
+      telephone: '',
     });
     setFormErrors({});
     setShowAddForm(false);
     setEditTeacherId(null);
   };
 
-  // Start editing a teacher
   const handleEdit = (teacher) => {
     setFormData({
-      name: teacher.name,
+      nom: teacher.nom,
       email: teacher.email,
-      subjects: teacher.subjects,
-      phone: teacher.phone || '',
+      spécialités: teacher.spécialités || [],
+      telephone: teacher.telephone || '',
     });
-    setEditTeacherId(teacher.id);
+    setEditTeacherId(teacher._id);
     setShowAddForm(true);
-
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Delete a teacher
-  const handleDelete = (id) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cet enseignant ?')) {
-      setTeachersList(prev => prev.filter(teacher => teacher.id !== id));
+  const handleDelete = async (id) => {
+    if (window.confirm('Confirmer la suppression ?')) {
+      setIsLoading(true);
+      try {
+        await axios.delete(`${API_URL}/profs/delete?id=${id}`);
+        fetchTeachers();
+      } catch (err) {
+        console.error("Erreur:", err);
+        alert("Échec de la suppression");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+
+  const handleSearch = (e) => setSearchTerm(e.target.value);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-
       <main className="flex-1 pt-20 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
@@ -176,7 +170,7 @@ const AdminTeachers = () => {
                 Tableau de bord
               </Link>
               <span className="text-gray-500">/</span>
-              <span className="text-gray-800">Gestion des enseignants</span>
+              <span className="text-gray-800">Enseignants</span>
             </div>
           </div>
 
@@ -186,140 +180,109 @@ const AdminTeachers = () => {
                 <Users className="h-6 w-6 mr-2 text-lime-600" />
                 Gestion des enseignants
               </h1>
-
-              <button
-                onClick={() => {
-                  setShowAddForm(!showAddForm);
-                  setEditTeacherId(null);
-                  if (showAddForm) {
-                    setFormData({
-                      name: '',
-                      email: '',
-                      subjects: [],
-                      phone: '',
-                    });
-                    setFormErrors({});
-                  }
-                }}
-                className="px-4 py-2 flex items-center bg-lime-600 text-white rounded-md hover:bg-lime-700 transition-colors"
-              >
-                {showAddForm ? (
-                  <>
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Rechercher..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                </div>
+                <button
+                  onClick={() => setShowAddForm(!showAddForm)}
+                  className="px-4 py-2 flex items-center bg-lime-600 text-white rounded-md hover:bg-lime-700"
+                >
+                  {showAddForm ? (
                     <X className="h-4 w-4 mr-2" />
-                    Annuler
-                  </>
-                ) : (
-                  <>
+                  ) : (
                     <Plus className="h-4 w-4 mr-2" />
-                    Ajouter un enseignant
-                  </>
-                )}
-              </button>
+                  )}
+                  {showAddForm ? 'Annuler' : 'Ajouter'}
+                </button>
+              </div>
             </div>
 
             {showAddForm && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
                 className="mb-8"
               >
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                    {editTeacherId ? 'Modifier l\'enseignant' : 'Ajouter un nouvel enseignant'}
+                    {editTeacherId ? 'Modifier' : 'Ajouter'} un enseignant
                   </h2>
-
                   <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                          Nom complet*
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Nom*</label>
                         <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
+                          name="nom"
+                          value={formData.nom}
                           onChange={handleInputChange}
-                          className={`block w-full px-4 py-2 border ${
-                            formErrors.name ? 'border-red-500' : 'border-gray-300'
-                          } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                          className={`block w-full px-4 py-2 border ${formErrors.nom ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                         />
-                        {formErrors.name && (
-                          <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
-                        )}
+                        {formErrors.nom && <p className="mt-1 text-sm text-red-600">{formErrors.nom}</p>}
                       </div>
-
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                          Email*
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
                         <input
-                          type="email"
-                          id="email"
                           name="email"
+                          type="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className={`block w-full px-4 py-2 border ${
-                            formErrors.email ? 'border-red-500' : 'border-gray-300'
-                          } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                          className={`block w-full px-4 py-2 border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                         />
-                        {formErrors.email && (
-                          <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>
-                        )}
+                        {formErrors.email && <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>}
                       </div>
-
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Matières enseignées*
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Matières*</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           {availableSubjects.map(subject => (
                             <label
                               key={subject}
-                              className={`flex items-center p-3 rounded-lg border ${
-                                formData.subjects.includes(subject)
-                                  ? 'bg-blue-50 border-blue-500'
-                                  : 'border-gray-300 hover:border-blue-400'
-                              } cursor-pointer transition-colors`}
+                              className={`flex items-center p-3 rounded-lg border ${formData.spécialités.includes(subject)
+                                ? 'bg-blue-50 border-blue-500'
+                                : 'border-gray-300'
+                                } cursor-pointer`}
                             >
                               <input
                                 type="checkbox"
-                                checked={formData.subjects.includes(subject)}
+                                checked={formData.spécialités.includes(subject)}
                                 onChange={() => handleSubjectChange(subject)}
                                 className="sr-only"
                               />
-                              <span className={`text-sm ${
-                                formData.subjects.includes(subject)
-                                  ? 'text-blue-700 font-medium'
-                                  : 'text-gray-700'
-                              }`}>
+                              <span className="text-sm">
                                 {subject}
                               </span>
                             </label>
                           ))}
                         </div>
-                        {formErrors.subjects && (
-                          <p className="mt-1 text-sm text-red-600">{formErrors.subjects}</p>
+                        {formErrors.spécialités && (
+                          <p className="mt-1 text-sm text-red-600">{formErrors.spécialités}</p>
                         )}
                       </div>
-
                       <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                          Téléphone
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                         <input
-                          type="text"
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
+                          name="telephone"
+                          value={formData.telephone}
                           onChange={handleInputChange}
-                          className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                          className="block w-full px-4 py-2 border border-gray-300 rounded-md"
                         />
                       </div>
                     </div>
-
                     <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={resetForm}
+                        className="px-6 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                      >
+                        Annuler
+                      </button>
                       <button
                         type="submit"
                         className="px-6 py-2 bg-lime-500 text-white rounded-md hover:bg-lime-600"
@@ -332,51 +295,84 @@ const AdminTeachers = () => {
               </motion.div>
             )}
 
-            <div className="overflow-x-auto bg-white rounded-lg shadow-md">
-              <table className="min-w-full table-auto">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Email</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Matières</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {filteredTeachers.map(teacher => (
-                    <tr key={teacher.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {teacher.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {teacher.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {teacher.subjects.join(', ')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleEdit(teacher)}
-                          className="text-lime-600 hover:text-lime-800 mr-4"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(teacher.id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </td>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md mb-6">
+                {error}
+              </div>
+            )}
+
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-lime-500" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white rounded-lg overflow-hidden">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Email</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Matières</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Téléphone</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredTeachers.map(teacher => (
+                      <tr key={teacher._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {teacher.nom}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <div className="flex items-center">
+                            <Mail className="h-4 w-4 mr-1 text-gray-400" />
+                            {teacher.email}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-wrap gap-1">
+                            {teacher.spécialités?.map(sp => (
+                              <span key={sp} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                                {sp}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {teacher.telephone ? (
+                            <div className="flex items-center">
+                              <Phone className="h-4 w-4 mr-1 text-gray-400" />
+                              {teacher.telephone}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">Non renseigné</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleEdit(teacher)}
+                              className="text-lime-600 hover:text-lime-800"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(teacher._id)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

@@ -24,7 +24,7 @@ const classes = [
   { id: 'cm3-b', name: 'CM3 B', levelId: 'cm3' },
 ];
 
-// Available subjects
+// les cours possible
 const availableSubjects = [
   'Français',
   'Mathématiques',
@@ -36,65 +36,31 @@ const availableSubjects = [
   'Arabe',
   'Informatique',
 ];
-
 // Mock data for teachers with multiple subjects
 const teachers = [
   { 
-    id: 't1', 
-    name: 'Amal Battou', 
-    email: 'amal.Battou@school.com', 
-    subjects: ['Français', ' Histoire-Géographie'],
-    image: '/image1.jpeg'
-  },
-  { 
-    id: 't2', 
-    name: 'machkour Mustapha', 
-    email: 'machkour.Mustapha@school.com', 
-    subjects: ['Mathématiques', 'Sciences'],
-    image: '/image1.jpeg'
-  },
-  { 
     id: 't3', 
-    name: 'Claire Leroy', 
-    email: 'claire.leroy@school.com', 
+    name: 'Machkour mustapha', 
+    email: 'Machkour@school.com', 
     subjects: ['Sciences', 'Mathématiques'],
     image: '/image1.jpeg'
   },
-  { 
-    id: 't4', 
-    name: 'Pierre Moreau', 
-    email: 'pierre.moreau@school.com', 
-    subjects: ['Histoire-Géographie', 'Arabe'],
-    image: '/image1.jpeg'
-  },
+   
   { 
     id: 't5', 
-    name: 'Marie Bernard', 
-    email: 'marie.bernard@school.com', 
+    name: 'Amellal Youssef', 
+    email: 'YoussefAmellal@school.com', 
     subjects: ['Anglais', 'Français'],
     image: '/image1.jpeg'
   },
   { 
     id: 't6', 
-    name: 'Antoine Petit', 
-    email: 'antoine.petit@school.com', 
+    name: 'Brahim chakir', 
+    email: 'chakirbrahim@school.com', 
     subjects: ['Sport', 'Sciences'],
     image: '/image1.jpeg'
   },
-  { 
-    id: 't7', 
-    name: 'Émilie Richard', 
-    email: 'emilie.richard@school.com', 
-    subjects: ['Mathématiques', 'Informatique'],
-    image: '/image1.jpeg'
-  },
-  { 
-    id: 't8', 
-    name: 'Julien Robert', 
-    email: 'julien.robert@school.com', 
-    subjects: ['Arabe', 'Islamique'],
-    image: '/image1.jpeg'
-  },
+  
 ];
 
 // Mock data for rooms

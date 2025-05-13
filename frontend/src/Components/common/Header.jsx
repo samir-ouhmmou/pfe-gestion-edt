@@ -38,13 +38,13 @@ const Header = () => {
         }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2">
-          <img src='/logo.png' alt="logo de projet" className="h-20 w-20 " />
-
-          <span className="text-xl font-bold font-BreeSerif ">Nawabigh</span>
-
+        <Link 
+          to={isAuthenticated ? (user?.role === 'administrateur' ? '/admin' : '/teacher') : '/'} 
+          className="flex items-center space-x-2"
+        >
+        <img src='/logo.png' alt="logo de projet" className="h-20 w-20" />
+        <span className="text-xl font-bold font-BreeSerif">Nawabigh</span>
         </Link>
-
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link
@@ -77,11 +77,10 @@ const Header = () => {
               </button>
               <div className="absolute right-0 w-48 mt-2 py-2 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                 <Link
-                  to={user?.role === 'admin' ? '/admin' : '/teacher'}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50"
-                >
-                  Tableau de bord
-                </Link>
+                   to={user?.role === 'administrateur' ? '/admin' : '/teacher'}
+                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
+                   Tableau de bord
+                  </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50"
@@ -147,11 +146,11 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  to={user?.role === 'admin' ? '/admin' : '/teacher'}
+                  to={user?.role === 'administrateur' ? '/admin' : '/teacher'}
                   onClick={closeMenu}
-                  className="block py-2 text-base font-medium text-gray-700"
+                 className="block py-2 text-base font-medium text-gray-700"
                 >
-                  Tableau de bord
+                 Tableau de bord
                 </Link>
                 <button
                   onClick={handleLogout}
