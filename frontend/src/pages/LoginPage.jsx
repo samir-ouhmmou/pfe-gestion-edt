@@ -1,3 +1,4 @@
+// src/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,15 +9,12 @@ import Header from '../Components/common/Header';
 import Footer from '../Components/common/Footer';
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
-// import  Loader  from 'lucide-react';
-
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [mot_de_passe, setPassword] = useState('');
   const [error, setError] = useState('');
-  // const [role, setRole] = useState('administrateur');
   const [isLoading, setIsLoading] = useState(false);
-  // const { login } = useAuth();
+  const { logout } = useAuth(); // facultatif
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -25,46 +23,35 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const instance = axios.create({
-        timeout: 10000 // 10 secondes
-      });
-
-      const response = await instance.post('/api/utilisateur/login', {
+      const response = await axios.post('/api/utilisateur/login', {
         email,
         mot_de_passe
       });
-      console.log("jani responce");
 
-      const data = response.data;
-      localStorage.setItem('token', data.token);
-      // Utiliser le rôle retourné par le backend
-      const decoded = jwtDecode(data.token); // ← Utilise jwt-decode
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+
+      const decoded = jwtDecode(token);
       console.log("Token décodé:", decoded);
-      // kay3erf le role dyalo 
+
       if (decoded.role === 'administrateur') {
-        console.log("dkhl l admin");
         navigate('/admin');
-        // window.location.href = '/admin';
-        console.log("ghadi l admin");
       } else if (decoded.role === 'professeur') {
         navigate('/teacher');
+      } else {
+        setError("Rôle utilisateur non reconnu.");
       }
-
 
     } catch (error) {
       if (error.response) {
-        // Erreur renvoyée par le backend
         setError(error.response.data.message || 'Erreur de connexion');
       } else {
-        // Erreur réseau
         setError('Une erreur est survenue');
       }
     } finally {
       setIsLoading(false);
     }
   };
-
-
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -77,13 +64,8 @@ const LoginPage = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md"
         >
-          {/* Logo Section */}
           <div className="flex flex-col items-center">
-            <div className="flex justify-center">
-
-              <img src='/logo.png' alt="logo de la platforme" className="h-40 w-50" />
-
-            </div>
+            <img src='/logo.png' alt="logo de la plateforme" className="h-40 w-50" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Connectez-vous à votre compte
             </h2>
@@ -92,7 +74,6 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -106,19 +87,8 @@ const LoginPage = () => {
             </motion.div>
           )}
 
-          {/* Login Form */}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
-              {/* <div className="input-group">
-                <label>Type d'utilisateur</label>
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <option value="admin">Admin</option>
-                  <option value="teacher">Teacher</option>
-                </select>
-              </div> */}
               <div>
                 <label htmlFor="email-address" className="sr-only">Adresse email</label>
                 <input
@@ -129,7 +99,7 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 sm:text-sm"
                   placeholder="Adresse email"
                 />
               </div>
@@ -143,7 +113,7 @@ const LoginPage = () => {
                   required
                   value={mot_de_passe}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 sm:text-sm"
                   placeholder="Mot de passe"
                 />
               </div>
@@ -176,10 +146,10 @@ const LoginPage = () => {
             </div>
           </form>
         </motion.div>
-      </div >
+      </div>
 
       <Footer />
-    </div >
+    </div>
   );
 };
 
