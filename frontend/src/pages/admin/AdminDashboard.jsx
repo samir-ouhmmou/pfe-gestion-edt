@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, Users, Home, BookOpen, Clock, Settings, Server, Download, HomeIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { AuthProvider } from '../../context/AuthProvider';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
 import { teachers, rooms, classes, classLevels } from '../../utils/timetableData';

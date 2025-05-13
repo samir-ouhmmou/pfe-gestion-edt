@@ -9,6 +9,7 @@ const profRoute = require('./rootes/prof/professeur');
 const classeRoute = require('./rootes/admin/classe');
 const salleRoute = require('./rootes/admin/salle');
 const profsRoute = require('./rootes/admin/profs');
+const niveauRoute = require('./rootes/admin/Niveau');
 const app = express();
 
 // Middleware
@@ -43,6 +44,7 @@ app.use('/api/professeur', profRoute);
 app.use('/api/classes',classeRoute);
 app.use('/api/salles',salleRoute);
 app.use('/api/profs',profsRoute);
+app.use('/api/niveau',niveauRoute);
 
 
 const PORT = process.env.PORT || 8888;

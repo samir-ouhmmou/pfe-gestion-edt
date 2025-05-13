@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';  // Ajoute BrowserRouter !!
-import { useAuth } from './context/AuthContext';
-import { AuthProvider } from './context/AuthProvider';
+import { AuthProvider } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ForgotPassword from './pages/ForgotPassword';
@@ -29,7 +28,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/timetable" element={<TimetablePage />} />
 

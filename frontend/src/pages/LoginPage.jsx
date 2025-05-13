@@ -1,8 +1,5 @@
 // src/pages/LoginPage.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Header from '../Components/common/Header';
@@ -12,45 +9,11 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [mot_de_passe, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { logout } = useAuth(); // facultatif
-  const navigate = useNavigate();
+  const { login, error, isLoading } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post('/api/utilisateur/login', {
-        email,
-        mot_de_passe
-      });
-
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-
-      const decoded = jwtDecode(token);
-      console.log("Token décodé:", decoded);
-
-      if (decoded.role === 'administrateur') {
-        navigate('/admin');
-      } else if (decoded.role === 'professeur') {
-        navigate('/teacher');
-      } else {
-        setError("Rôle utilisateur non reconnu.");
-      }
-
-    } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message || 'Erreur de connexion');
-      } else {
-        setError('Une erreur est survenue');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    await login(email, mot_de_passe);
   };
 
   return (
