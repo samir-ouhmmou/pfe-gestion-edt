@@ -7,6 +7,10 @@ const classLevels = [
   { id: 'cm2', name: 'CM2' },
   { id: 'cm3', name: 'CM3' },
 ];
+const availableLevels = [
+  'CP','CE1','CE2','CM1','CM2','CM3',
+  
+];
 
 // Mock data for classes
 const classes = [
@@ -184,6 +188,7 @@ export {
   availableSubjects,
   teachers,
   rooms,
+  availableLevels,
   generateTimetableEntries,
   getTeacherTimetable,
   getClassTimetable,

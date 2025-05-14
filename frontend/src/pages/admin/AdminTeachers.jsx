@@ -21,6 +21,8 @@ const AdminTeachers = () => {
     email: '',
     spécialités: [],
     telephone: '',
+    motDePasse: '',         
+    niveaux: []
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -89,6 +91,9 @@ const AdminTeachers = () => {
     if (formData.spécialités.length === 0) errors.spécialités = 'Au moins une matière requise';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
+    if (!formData.motDePasse.trim()) {
+  errors.motDePasse = 'Mot de passe requis';
+  }
   };
 
   const handleSubmit = async (e) => {
@@ -99,7 +104,8 @@ const AdminTeachers = () => {
     try {
       const teacherData = {
         ...formData,
-        spécialité: formData.spécialités.join(' ') // Convertir le tableau en chaîne pour l'API
+        spécialité: formData.spécialités.join(' '), // Convertir le tableau en chaîne pour l'API
+        niveaux: formData.niveaux.join(',')
       };
 
       if (editTeacherId) {
@@ -123,7 +129,10 @@ const AdminTeachers = () => {
       email: '',
       spécialités: [],
       telephone: '',
+      motDePasse: '',
+      niveaux: []
     });
+
     setFormErrors({});
     setShowAddForm(false);
     setEditTeacherId(null);
@@ -135,7 +144,10 @@ const AdminTeachers = () => {
       email: teacher.email,
       spécialités: teacher.spécialités || [],
       telephone: teacher.telephone || '',
+      motDePasse: '', // ne pas pré-remplir pour la sécurité
+      niveaux: teacher.niveaux ? teacher.niveaux.split(',') : []
     });
+
     setEditTeacherId(teacher._id);
     setShowAddForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -191,7 +203,7 @@ const AdminTeachers = () => {
                   />
                   <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
-                <button
+               <button
                   onClick={() => setShowAddForm(!showAddForm)}
                   className="px-4 py-2 flex items-center bg-lime-600 text-white rounded-md hover:bg-lime-700"
                 >
@@ -238,6 +250,26 @@ const AdminTeachers = () => {
                         />
                         {formErrors.email && <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>}
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe*</label>
+                        <input
+                          name="motDePasse"
+                          type="password"
+                          value={formData.motDePasse}
+                          onChange={handleInputChange}
+                          className={`block w-full px-4 py-2 border ${formErrors.motDePasse ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                        />
+                        {formErrors.motDePasse && <p className="mt-1 text-sm text-red-600">{formErrors.motDePasse}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                        <input
+                          name="telephone"
+                          value={formData.telephone}
+                          onChange={handleInputChange}
+                          className="block w-full px-4 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Matières*</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -265,15 +297,35 @@ const AdminTeachers = () => {
                           <p className="mt-1 text-sm text-red-600">{formErrors.spécialités}</p>
                         )}
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                        <input
-                          name="telephone"
-                          value={formData.telephone}
-                          onChange={handleInputChange}
-                          className="block w-full px-4 py-2 border border-gray-300 rounded-md"
-                        />
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Niveaux pris en charge</label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {['CP', 'CE1', 'CE2', 'CM1', 'CM2'].map(niveau => (
+                            <label
+                              key={niveau}
+                              className={`flex items-center p-3 rounded-lg border ${formData.niveaux.includes(niveau)
+                                ? 'bg-green-50 border-green-500'
+                                : 'border-gray-300'} cursor-pointer`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={formData.niveaux.includes(niveau)}
+                                onChange={() => {
+                                  setFormData(prev => {
+                                    const newNiveaux = prev.niveaux.includes(niveau)
+                                      ? prev.niveaux.filter(n => n !== niveau)
+                                      : [...prev.niveaux, niveau];
+                                    return { ...prev, niveaux: newNiveaux };
+                                  });
+                                }}
+                                className="sr-only"
+                              />
+                              <span className="text-sm">{niveau}</span>
+                            </label>
+                          ))}
+                        </div>
                       </div>
+
                     </div>
                     <div className="flex justify-end">
                       <button
