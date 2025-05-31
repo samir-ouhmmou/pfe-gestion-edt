@@ -11,33 +11,77 @@ require('dotenv').config();
 
 
 // login api working with succes
-router.post('/login', (req, res) => {
-    const utilisateur = req.body;
+// router.post('/login', (req, res) => {
+//     const utilisateur = req.body;
     
-    // nvérifier wach hadchi bhal bhal 
-    if (!utilisateur.email || !utilisateur.mot_de_passe) {
+//     // nvérifier wach hadchi bhal bhal 
+//     if (!utilisateur.email || !utilisateur.mot_de_passe) {
+//         return res.status(400).json({ message: "L'email et le mot de passe sont requis" });
+//     }
+    
+//     query = "SELECT id_utilisateur, email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?";
+//     connection.query(query, [utilisateur.email], (err, results) => {
+//         if (err) {
+//             return res.status(500).json(err);
+//         }
+        
+//         if (results.length <= 0) {
+//             return res.status(401).json({message: "Email ou mot de passe incorrect"});
+//         } 
+        
+//         if (results[0].mot_de_passe === utilisateur.mot_de_passe) {
+//             const response = {id_utilisateur: results[0].id_utilisateur,email: results[0].email, role: results[0].role, nom : results[0].nom};
+//             const accestoken = jwt.sign(response, process.env.ACCES_TOKEN, {expiresIn: '10h'});
+//             return res.status(200).json({token: accestoken});
+
+//         } else {
+//             return res.status(401).json({message: "Email ou mot de passe incorrect"});
+//         }
+//     });
+// });
+router.post('/login', async (req, res) => {
+    const { email, mot_de_passe } = req.body;
+    
+    if (!email || !mot_de_passe) {
         return res.status(400).json({ message: "L'email et le mot de passe sont requis" });
     }
     
-    query = "SELECT id_utilisateur ,email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?";
-    connection.query(query, [utilisateur.email], (err, results) => {
-        if (err) {
-            return res.status(500).json(err);
-        }
+    try {
+        // 1. Récupérer l'utilisateur avec le mot de passe haché
+        const [results] = await connection.promise().query(
+            "SELECT id_utilisateur, email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?", 
+            [email]
+        );
         
-        if (results.length <= 0) {
+        if (results.length === 0) {
             return res.status(401).json({message: "Email ou mot de passe incorrect"});
-        } 
-        
-        if (results[0].mot_de_passe === utilisateur.mot_de_passe) {
-            const response = {id_utilisateur: results[0].id_utilisateur,email: results[0].email, role: results[0].role, nom : results[0].nom};
-            const accestoken = jwt.sign(response, process.env.ACCES_TOKEN, {expiresIn: '10h'});
-            return res.status(200).json({token: accestoken});
+        }
 
-        } else {
+        const user = results[0];
+        
+        // 2. Comparaison sécurisée avec bcrypt
+        const isMatch = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
+        
+        if (!isMatch) {
             return res.status(401).json({message: "Email ou mot de passe incorrect"});
         }
-    });
+
+        // 3. Génération du token JWT
+        const response = {
+            id_utilisateur: user.id_utilisateur,
+            email: user.email, 
+            role: user.role, 
+            nom: user.nom
+        };
+        
+        const accestoken = jwt.sign(response, process.env.ACCES_TOKEN, {expiresIn: '10h'});
+        
+        return res.status(200).json({token: accestoken});
+
+    } catch (err) {
+        console.error('Erreur login:', err);
+        return res.status(500).json({message: "Erreur serveur"});
+    }
 });
 // Configuration du transporteur email
 var transporter = nodeMailer.createTransport({
