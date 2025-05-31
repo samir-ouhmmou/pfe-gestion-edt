@@ -1,41 +1,49 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, Building , AlertTriangle, HomeIcon } from 'lucide-react';
+import { Calendar, Building, AlertTriangle, HomeIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
-import { teachers, getTeacherTimetable } from '../../utils/timetableData';
+import axios from 'axios';
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
-  const teacher = teachers.find(t => t.email === user?.email) || teachers[0];
+  const [teacher, setTeacher] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Get next class from teacher's timetable
-  const getTodayClasses = () => {
-    const timetable = getTeacherTimetable(teacher.id);
-    const today = new Date();
-    const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    const todayName = dayNames[today.getDay()];
-    
-    // Filter classes for today
-    const todayClasses = timetable.filter(entry => entry.day === todayName);
-    
-    // Sort by start time
-    todayClasses.sort((a, b) => {
-      const timeA = a.startTime.split(':').map(Number);
-      const timeB = b.startTime.split(':').map(Number);
-      return (timeA[0] * 60 + timeA[1]) - (timeB[0] * 60 + timeB[1]);
-    });
-    
-    return todayClasses;
+ useEffect(() => {
+  const fetchTeacherData = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8888/api/professeur/by-email/${user.email}`);
+      setTeacher(res.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération du professeur :', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const todayClasses = getTodayClasses();
+  if (user?.email) {
+    fetchTeacherData();
+  }
+
+  console.log("Données user : ", user);
+}, [user?.email]);
+
+
+  if (loading) {
+    return <div className="text-center mt-20">Chargement...</div>;
+  }
+
+  if (!teacher) {
+    return <div className="text-center mt-20 text-red-500">Aucune donnée trouvée pour ce professeur.</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-20 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-8">
@@ -44,10 +52,10 @@ const TeacherDashboard = () => {
               Accueil
             </Link>
           </div>
-          
+
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Teacher Profile Sidebar */}
-            <motion.div 
+            {/* Sidebar: Profil */}
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
@@ -56,16 +64,16 @@ const TeacherDashboard = () => {
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex flex-col items-center mb-6">
                   <div className="w-24 h-24 rounded-full overflow-hidden mb-4">
-                    <img 
-                      src={teacher.image || "/image1.jpeg"} 
-                      alt={teacher.name} 
+                    <img
+                      src={"/image1.jpeg"} // pas de photo dans la base
+                      alt={teacher.nom}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">{teacher.name}</h2>
-                  <p className="text-gray-600">{teacher.subjects}</p>
+                  <h2 className="text-xl font-bold text-gray-900">{teacher.nom}</h2>
+                  <p className="text-gray-600">{teacher.spécialité}</p>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
@@ -73,10 +81,10 @@ const TeacherDashboard = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Téléphone</p>
-                    <p className="text-gray-900">{teacher.phone || "+33 1 23 45 67 89"}</p>
+                    <p className="text-gray-900">{teacher.telephone || '+33 1 23 45 67 89'}</p>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 space-y-3">
                   <Link
                     to="/teacher/profile"
@@ -93,61 +101,37 @@ const TeacherDashboard = () => {
                 </div>
               </div>
             </motion.div>
-            
-            {/* Main Content */}
-            <motion.div 
+
+            {/* Contenu principal */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="w-full md:w-2/3 lg:w-3/4"
             >
-              {/* Welcome Banner */}
-              <div className=" bg-gradient-to-r from-gray-700 to-lime-500 rounded-lg shadow-md p-6 text-white mb-6">
-                <h1 className="text-2xl font-bold  mb-2">Bienvenue, {teacher.name}</h1>
+              {/* Bannière bienvenue */}
+              <div className="bg-gradient-to-r from-gray-700 to-lime-500 rounded-lg shadow-md p-6 text-white mb-6">
+                <h1 className="text-2xl font-bold mb-2">Bienvenue, {teacher.nom} {teacher.prenom}</h1>
                 <p className="text-blue-100">
                   Gérez votre emploi du temps et vos absences depuis votre espace personnel.
                 </p>
               </div>
-              
-              {/* Today's Classes */}
+
+              {/* Bloc "Cours d'aujourd'hui" — désactivé temporairement */}
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <Calendar className="h-5 w-5 mr-2 text-lime-600" />
                   Cours d'aujourd'hui
                 </h2>
-                
-                {todayClasses.length > 0 ? (
-                  <div className="space-y-4">
-                    {todayClasses.map((cls, index) => (
-                      <motion.div
-                        key={cls.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.1 * index }}
-                        className="flex p-4 border border-gray-200 rounded-lg hover:border-blue-200 hover:bg-blue-50 transition-colors"
-                      >
-                        <div className="w-20 flex-shrink-0 text-center border-r border-gray-200 pr-4">
-                          <p className="text-gray-900 font-medium">{cls.startTime}</p>
-                          <p className="text-xs text-gray-500">à {cls.endTime}</p>
-                        </div>
-                        <div className="ml-4">
-                          <p className="font-medium text-gray-900">{cls.subject}</p>
-                          <p className="text-gray-600">Classe: {cls.classId.toUpperCase()}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                    <p className="text-gray-600">Aucun cours aujourd'hui</p>
-                  </div>
-                )}
+                <div className="text-center py-8">
+                  <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-600">Module en cours de développement</p>
+                </div>
               </div>
-              
-              {/* Quick Actions */}
+
+              {/* Actions rapides */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                     <AlertTriangle className="h-5 w-5 mr-2 text-lime-600" />
                     Absences
@@ -161,14 +145,19 @@ const TeacherDashboard = () => {
                   >
                     Gérer mes absences
                     <svg className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </Link>
                 </div>
+
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <Building  className="h-5 w-5 mr-2 text-lime-600" />
-                    Réservation 
+                    <Building className="h-5 w-5 mr-2 text-lime-600" />
+                    Réservation
                   </h2>
                   <p className="text-gray-600 mb-4">
                     Réserver une salle à l'avance pour permettre une meilleure organisation.
@@ -177,9 +166,13 @@ const TeacherDashboard = () => {
                     to="/teacher/reservation"
                     className="inline-flex items-center text-lime-600 hover:text-lime-800"
                   >
-                    Gérer mes Réservation
+                    Gérer mes Réservations
                     <svg className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </Link>
                 </div>
@@ -188,7 +181,7 @@ const TeacherDashboard = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
