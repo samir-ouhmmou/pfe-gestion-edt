@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
+import { classLevels } from '../../utils/timetableData';
 import { BookOpen, HomeIcon, Plus, Edit, Trash2, Search, X } from 'lucide-react';
 
 const AdminClasses = () => {
@@ -471,20 +472,28 @@ const AdminClasses = () => {
               )}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+          {/* Levels Management Section */}
+          <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
               <BookOpen className="h-5 w-5 mr-2 text-lime-600" />
               Niveaux scolaires
             </h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {levels.map(level => (
-                <div key={level.id_niveau} className="bg-gray-50 rounded-lg p-4 text-center">
-                  <span className="text-lg font-semibold text-gray-900">
-                    {level.niveau}
-                  </span>
-                </div>
-              ))}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {classLevels.map(level => {
+                // const levelClassCount = classesList.filter(cls => cls.levelId === level.id).length;
+                
+                return (
+                  <div key={level.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold text-gray-900">{level.name}</h3>
+                      {/* <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+                        { {levelClassCount} {levelClassCount > 1 ? 'classes' : 'classe'} }
+                      </span> */}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -70,7 +70,7 @@ const TeacherDashboard = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">{teacher.nom}</h2>
+                  <h2 className="text-xl font-bold text-gray-900">{teacher.nom} {teacher.prénom}</h2>
                   <p className="text-gray-600">{teacher.spécialité}</p>
                 </div>
 
@@ -111,7 +111,7 @@ const TeacherDashboard = () => {
             >
               {/* Bannière bienvenue */}
               <div className="bg-gradient-to-r from-gray-700 to-lime-500 rounded-lg shadow-md p-6 text-white mb-6">
-                <h1 className="text-2xl font-bold mb-2">Bienvenue, {teacher.nom} {teacher.prenom}</h1>
+                <h1 className="text-2xl font-bold mb-2">Bienvenue, {teacher.nom} {teacher.prénom}</h1>
                 <p className="text-blue-100">
                   Gérez votre emploi du temps et vos absences depuis votre espace personnel.
                 </p>
