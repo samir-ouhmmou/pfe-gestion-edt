@@ -19,7 +19,7 @@ router.post('/login', (req, res) => {
         return res.status(400).json({ message: "L'email et le mot de passe sont requis" });
     }
     
-    query = "SELECT email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?";
+    query = "SELECT id_utilisateur ,email, mot_de_passe, nom, role FROM utilisateur WHERE email = ?";
     connection.query(query, [utilisateur.email], (err, results) => {
         if (err) {
             return res.status(500).json(err);
@@ -30,7 +30,7 @@ router.post('/login', (req, res) => {
         } 
         
         if (results[0].mot_de_passe === utilisateur.mot_de_passe) {
-            const response = {email: results[0].email, role: results[0].role, nom : results[0].nom};
+            const response = {id_utilisateur: results[0].id_utilisateur,email: results[0].email, role: results[0].role, nom : results[0].nom};
             const accestoken = jwt.sign(response, process.env.ACCES_TOKEN, {expiresIn: '10h'});
             return res.status(200).json({token: accestoken});
 

@@ -1,20 +1,56 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Calendar, Users, Home, BookOpen, Clock, Settings, Server, Download, HomeIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
-import { teachers, rooms, classes, classLevels } from '../../utils/timetableData';
+
+
 
 const AdminDashboard = () => {
   const { user } = useAuth();
 
-  // Calculate statistics
-  const totalTeachers = teachers.length;
-  const totalRooms = rooms.length;
-  const totalClasses = classes.length;
-  const totalLevels = classLevels.length;
 
+  const [totalProfs, setTotalTeachers] = useState(0);
+  const [totalClasses, setTotalClasses] = useState(0);
+  const [totalSalles, setTotalSalles] = useState(0);
+  useEffect(() => {
+    const fetchTotalProfs = async () => {
+      try {
+        const response = await axios.get('http://localhost:8888/api/statistics/NbrProfs');
+        setTotalTeachers(response.data.nbrProfs);
+      } catch (err) {
+        console.error("Erreur lors de la récupération du nombre de professeurs :", err);
+      }
+    };
+
+    fetchTotalProfs();
+    //
+    const fetchTotalClasses = async () => {
+      try {
+        const response = await axios.get('http://localhost:8888/api/statistics/NbrClasses');
+        setTotalClasses(response.data.nbrClasses);
+      } catch (err) {
+        console.error("Erreur lors de la récupération du nombre de professeurs :", err);
+      }
+    };
+
+    fetchTotalClasses();
+    //
+    const fetchTotalSalles = async () => {
+      try {
+        const response = await axios.get('http://localhost:8888/api/statistics/NbrSalles');
+        setTotalSalles(response.data.nbrSalles);
+      } catch (err) {
+        console.error("Erreur lors de la récupération du nombre de professeurs :", err);
+      }
+    };
+
+    fetchTotalSalles();
+  }, []);
+  // Calculate statistics
   // Mock data for pending tasks
   const pendingTasks = [
     { id: 1, title: "Validation de 3 absences", type: "absence", priority: "high" },
@@ -88,7 +124,7 @@ const AdminDashboard = () => {
             <StatCard
               icon={<Users className="h-8 w-8 text-blue-600" />}
               title="Professeurs"
-              value={totalTeachers}
+              value={totalProfs}
               link="/admin/teachers"
               delay={0.1}
             />
@@ -102,14 +138,14 @@ const AdminDashboard = () => {
             <StatCard
               icon={<Home className="h-8 w-8 text-amber-600" />}
               title="Salles"
-              value={totalRooms}
+              value={totalSalles}
               link="/admin/rooms"
               delay={0.3}
             />
             <StatCard
               icon={<Server className="h-8 w-8 text-violet-600" />}
               title="Niveaux"
-              value={totalLevels}
+              value="6"
               link="/admin/classes"
               delay={0.4}
             />

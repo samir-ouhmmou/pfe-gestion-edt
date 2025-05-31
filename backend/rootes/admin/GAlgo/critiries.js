@@ -1,14 +1,14 @@
-// Fonction qui évalue la qualité globale d'un emploi du temps (fitness)
+// Fonction du fitness 
 const evaluerFitness = (edt) => {
   // Un score grand est meilleur
   let score = 100;
   
   // Appliquer chaque critère et ajuster le score
-  score -= evaluerConflitsHoraires(edt) * 10;  // Pénalité forte pour les conflits
-  score -= evaluerChargeJournaliere(edt) * 5;  // Pénalité moyenne pour mauvaise répartition
-  score -= evaluerContraintesSpecifiques(edt) * 3;  // Pénalité légère pour contraintes spécifiques
+  score -= evaluerConflitsHoraires(edt) * 10;  // contr forte pour les conflits
+  score -= evaluerChargeJournaliere(edt) * 5;  // contr moyenne pour mauvaise répartition
+  score -= evaluerContraintesSpecifiques(edt) * 3;  // contr légère pour contraintes spécifiques
 
-  // Limiter le score minimum à 0
+  // min score 0
   return Math.max(0, score);
 };
 
@@ -107,8 +107,6 @@ const evaluerContraintesSpecifiques = (edt) => {
 
 // Vérifier si un emploi du temps est valide (respecte les contraintes dures)
 const estValide = (edt) => {
-  // Un emploi du temps est valide s'il n'a pas de conflits critiques
-  // Par exemple, un professeur ne peut pas être à deux endroits en même temps
   return evaluerConflitsHoraires(edt) === 0;
 };
 

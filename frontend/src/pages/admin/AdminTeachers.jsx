@@ -19,9 +19,10 @@ const AdminTeachers = () => {
   const [formData, setFormData] = useState({
     nom: '',
     email: '',
+    prénom: '',
     spécialités: [],
     telephone: '',
-    motDePasse: '',         
+    mot_de_pass: '',
     niveaux: []
   });
   const [formErrors, setFormErrors] = useState({});
@@ -33,19 +34,17 @@ const AdminTeachers = () => {
   const fetchTeachers = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await axios.get(`${API_URL}/profs/get`);
-      // Convertir les spécialités de chaîne à tableau si nécessaire
       const formattedTeachers = response.data.map(teacher => ({
         ...teacher,
+        _id: teacher.id_prof, // Mapping correct de l'ID
         spécialités: teacher.spécialité ? teacher.spécialité.split(' ') : []
       }));
       setTeachersList(formattedTeachers);
-      console.log('Données formatées:', formattedTeachers);
     } catch (err) {
       console.error("Erreur lors du chargement:", err);
-      setError("Erreur de chargement des données");
+      setError("Erreur de chargement des données: " + (err.response?.data?.message || err.message));
     } finally {
       setIsLoading(false);
     }
@@ -83,17 +82,16 @@ const AdminTeachers = () => {
   const validateForm = () => {
     const errors = {};
     if (!formData.nom.trim()) errors.nom = 'Nom requis';
+    if (!formData.prénom.trim()) errors.prénom = 'Prénom requis';
     if (!formData.email.trim()) {
       errors.email = 'Email requis';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'Email invalide';
     }
     if (formData.spécialités.length === 0) errors.spécialités = 'Au moins une matière requise';
+    if (!formData.mot_de_pass.trim()) errors.mot_de_pass = 'Mot de passe requis';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-    if (!formData.motDePasse.trim()) {
-  errors.motDePasse = 'Mot de passe requis';
-  }
   };
 
   const handleSubmit = async (e) => {
@@ -104,17 +102,24 @@ const AdminTeachers = () => {
     try {
       const teacherData = {
         ...formData,
-        spécialité: formData.spécialités.join(' '), // Convertir le tableau en chaîne pour l'API
-        niveaux: formData.niveaux.join(',')
+        spécialité: formData.spécialités.join(' '),
+        niveau: formData.niveaux.join(',')
       };
 
+      let response;
       if (editTeacherId) {
-        await axios.put(`${API_URL}/profs/update?id=${editTeacherId}`, teacherData);
+        response = await axios.put(`${API_URL}/profs/update?id=${editTeacherId}`, teacherData);
       } else {
-        await axios.post(`${API_URL}/profs/add`, teacherData);
+        response = await axios.post(`${API_URL}/profs/add`, teacherData);
       }
-      fetchTeachers();
-      resetForm();
+
+      if (response.data.success || response.status === 200) {
+        fetchTeachers();
+        resetForm();
+        alert(response.data.message || "Opération réussie");
+      } else {
+        alert(response.data.message || "Opération réussie mais pas de confirmation du serveur");
+      }
     } catch (err) {
       console.error("Erreur:", err);
       alert(err.response?.data?.message || "Erreur lors de l'enregistrement");
@@ -127,12 +132,12 @@ const AdminTeachers = () => {
     setFormData({
       nom: '',
       email: '',
+      prénom: '',
       spécialités: [],
       telephone: '',
-      motDePasse: '',
+      mot_de_pass: '',
       niveaux: []
     });
-
     setFormErrors({});
     setShowAddForm(false);
     setEditTeacherId(null);
@@ -141,13 +146,13 @@ const AdminTeachers = () => {
   const handleEdit = (teacher) => {
     setFormData({
       nom: teacher.nom,
+      prénom: teacher.prénom,
       email: teacher.email,
       spécialités: teacher.spécialités || [],
       telephone: teacher.telephone || '',
-      motDePasse: '', // ne pas pré-remplir pour la sécurité
-      niveaux: teacher.niveaux ? teacher.niveaux.split(',') : []
+      mot_de_pass: '', // On ne pré-remplit pas le mot de passe pour des raisons de sécurité
+      niveaux: teacher.niveau ? teacher.niveau.split(',') : []
     });
-
     setEditTeacherId(teacher._id);
     setShowAddForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -157,11 +162,16 @@ const AdminTeachers = () => {
     if (window.confirm('Confirmer la suppression ?')) {
       setIsLoading(true);
       try {
-        await axios.delete(`${API_URL}/profs/delete?id=${id}`);
-        fetchTeachers();
+        const response = await axios.delete(`${API_URL}/profs/delete?id=${id}`);
+        if (response.data.success) {
+          fetchTeachers();
+          alert(response.data.message);
+        } else {
+          alert("Échec de la suppression: " + (response.data.message || "Erreur inconnue"));
+        }
       } catch (err) {
         console.error("Erreur:", err);
-        alert("Échec de la suppression");
+        alert("Échec de la suppression: " + (err.response?.data?.message || err.message));
       } finally {
         setIsLoading(false);
       }
@@ -203,15 +213,11 @@ const AdminTeachers = () => {
                   />
                   <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 </div>
-               <button
+                <button
                   onClick={() => setShowAddForm(!showAddForm)}
                   className="px-4 py-2 flex items-center bg-lime-600 text-white rounded-md hover:bg-lime-700"
                 >
-                  {showAddForm ? (
-                    <X className="h-4 w-4 mr-2" />
-                  ) : (
-                    <Plus className="h-4 w-4 mr-2" />
-                  )}
+                  {showAddForm ? <X className="h-4 w-4 mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
                   {showAddForm ? 'Annuler' : 'Ajouter'}
                 </button>
               </div>
@@ -240,6 +246,16 @@ const AdminTeachers = () => {
                         {formErrors.nom && <p className="mt-1 text-sm text-red-600">{formErrors.nom}</p>}
                       </div>
                       <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Prénom*</label>
+                        <input
+                          name="prénom"
+                          value={formData.prénom}
+                          onChange={handleInputChange}
+                          className={`block w-full px-4 py-2 border ${formErrors.prénom ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                        />
+                        {formErrors.prénom && <p className="mt-1 text-sm text-red-600">{formErrors.prénom}</p>}
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
                         <input
                           name="email"
@@ -253,13 +269,13 @@ const AdminTeachers = () => {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe*</label>
                         <input
-                          name="motDePasse"
+                          name="mot_de_pass"
                           type="password"
-                          value={formData.motDePasse}
+                          value={formData.mot_de_pass}
                           onChange={handleInputChange}
-                          className={`block w-full px-4 py-2 border ${formErrors.motDePasse ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+                          className={`block w-full px-4 py-2 border ${formErrors.mot_de_pass ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                         />
-                        {formErrors.motDePasse && <p className="mt-1 text-sm text-red-600">{formErrors.motDePasse}</p>}
+                        {formErrors.mot_de_pass && <p className="mt-1 text-sm text-red-600">{formErrors.mot_de_pass}</p>}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
@@ -278,8 +294,7 @@ const AdminTeachers = () => {
                               key={subject}
                               className={`flex items-center p-3 rounded-lg border ${formData.spécialités.includes(subject)
                                 ? 'bg-blue-50 border-blue-500'
-                                : 'border-gray-300'
-                                } cursor-pointer`}
+                                : 'border-gray-300'} cursor-pointer`}
                             >
                               <input
                                 type="checkbox"
@@ -287,15 +302,11 @@ const AdminTeachers = () => {
                                 onChange={() => handleSubjectChange(subject)}
                                 className="sr-only"
                               />
-                              <span className="text-sm">
-                                {subject}
-                              </span>
+                              <span className="text-sm">{subject}</span>
                             </label>
                           ))}
                         </div>
-                        {formErrors.spécialités && (
-                          <p className="mt-1 text-sm text-red-600">{formErrors.spécialités}</p>
-                        )}
+                        {formErrors.spécialités && <p className="mt-1 text-sm text-red-600">{formErrors.spécialités}</p>}
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Niveaux pris en charge</label>
@@ -325,7 +336,6 @@ const AdminTeachers = () => {
                           ))}
                         </div>
                       </div>
-
                     </div>
                     <div className="flex justify-end">
                       <button
@@ -363,6 +373,7 @@ const AdminTeachers = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Nom</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Prénom</th>
                       <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Email</th>
                       <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Matières</th>
                       <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Téléphone</th>
@@ -374,6 +385,9 @@ const AdminTeachers = () => {
                       <tr key={teacher._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {teacher.nom}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {teacher.prénom}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex items-center">

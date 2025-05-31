@@ -8,8 +8,8 @@ router.post('/add', (req, res) => {
     let profs = req.body;
 
     // ajoute dans professeur
-    var profQuery = "INSERT INTO professeur(nom, prénom, email, telephone, spécialité, classe, niveau, mot_de_pass) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    var profValues = [profs.nom, profs.prénom, profs.email, profs.telephone, profs.spécialité, profs.classe, profs.niveau, profs.mot_de_pass];
+    var profQuery = "INSERT INTO professeur(nom, prénom, email, telephone, spécialité, niveau, mot_de_pass) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    var profValues = [profs.nom, profs.prénom, profs.email, profs.telephone, profs.spécialité, profs.niveau, profs.mot_de_pass];
 
     connection.query(profQuery, profValues, (err, results) => {
         if (err) {
@@ -46,34 +46,47 @@ router.get('/get', (req, res) => {
 router.delete('/delete', (req, res) => {
     const id_prof = req.query.id;
 
-    // cherchont lemail du prof 
+    if (!id_prof) {
+        return res.status(400).json({ message: "ID du professeur requis" });
+    }
+
+    // Récupération de l'email du professeur
     var selectQuery = "SELECT email FROM professeur WHERE id_prof = ?";
     connection.query(selectQuery, [id_prof], (err, result) => {
         if (err) {
-            return res.status(500).json(err);
+            console.error("Erreur lors de la recherche du professeur:", err);
+            return res.status(500).json({ message: "Erreur serveur", error: err });
         }
 
         if (result.length === 0) {
-            return res.status(404).json({ message: "Aucun professeur trouvé avec cet id" });
+            return res.status(404).json({ message: "Aucun professeur trouvé avec cet ID" });
         }
 
         const emailProf = result[0].email;
 
-        // supprimé dans prof avec id 
+        // Suppression du professeur
         var supProf = "DELETE FROM professeur WHERE id_prof = ?";
         connection.query(supProf, [id_prof], (err2, results2) => {
             if (err2) {
-                return res.status(500).json(err2);
+                console.error("Erreur lors de la suppression du professeur:", err2);
+                return res.status(500).json({ message: "Erreur lors de la suppression du professeur", error: err2 });
             }
 
-            // supp dans utilisateur avec email
+            // Suppression de l'utilisateur associé
             var supUser = "DELETE FROM utilisateur WHERE email = ?";
             connection.query(supUser, [emailProf], (err3, results3) => {
                 if (err3) {
-                    return res.status(500).json({ message: "Professeur supprimé mais erreur lors de la suppression utilisateur", error: err3 });
+                    console.error("Erreur lors de la suppression de l'utilisateur:", err3);
+                    return res.status(500).json({ 
+                        message: "Professeur supprimé mais erreur lors de la suppression de l'utilisateur", 
+                        error: err3 
+                    });
                 }
 
-                return res.status(200).json({ message: "Professeur et utilisateur supprimés avec succès ✔ !!" });
+                return res.status(200).json({ 
+                    success: true,
+                    message: "Professeur et utilisateur supprimés avec succès" 
+                });
             });
         });
     });
@@ -82,50 +95,68 @@ router.delete('/delete', (req, res) => {
 //endpoint pour modifier un prof dans la base de donnée 
 router.put('/update', (req, res) => {
     const id_prof = req.query.id;
-    const { nom, prénom, email, telephone, spécialité, classe, niveau, mot_de_pass } = req.body;
+    const { nom, prénom, email, telephone, spécialité, niveau, mot_de_pass } = req.body;
 
-    // 
+    if (!id_prof) {
+        return res.status(400).json({ message: "ID du professeur requis" });
+    }
+
+    // Vérification de l'existence du professeur
     var selectQuery = "SELECT email FROM professeur WHERE id_prof = ?";
     connection.query(selectQuery, [id_prof], (err, result) => {
         if (err) {
-            return res.status(500).json(err);
+            console.error("Erreur lors de la recherche du professeur:", err);
+            return res.status(500).json({ message: "Erreur serveur", error: err });
         }
 
         if (result.length === 0) {
-            return res.status(404).json({ message: "Aucun professeur trouvé avec cet id" });
+            return res.status(404).json({ message: "Aucun professeur trouvé avec cet ID" });
         }
 
         const oldEmail = result[0].email;
 
-        // 
-        var updateProfQuery = `UPDATE professeur SET nom = ?,prénom = ?, email = ?, telephone = ?, spécialité = ?, classe = ?, niveau = ?, mot_de_pass = ? WHERE id_prof = ?`;
-        const profValues = [nom, prénom, email, telephone, spécialité, classe, niveau, mot_de_pass, id_prof];
+        // Mise à jour du professeur
+        var updateProfQuery = `UPDATE professeur SET 
+            nom = ?,
+            prénom = ?, 
+            email = ?, 
+            telephone = ?, 
+            spécialité = ?, 
+            niveau = ?, 
+            mot_de_pass = ? 
+            WHERE id_prof = ?`;
+            
+        const profValues = [nom, prénom, email, telephone, spécialité, niveau, mot_de_pass, id_prof];
 
         connection.query(updateProfQuery, profValues, (err2, results2) => {
             if (err2) {
-                return res.status(500).json(err2);
+                console.error("Erreur lors de la mise à jour du professeur:", err2);
+                return res.status(500).json({ message: "Erreur lors de la mise à jour du professeur", error: err2 });
             }
 
-            if (results2.affectedRows === 0) {
-                return res.status(404).json({ message: "Aucun professeur trouvé avec cet id (update)" });
-            }
-
-            // update on utilisateur
-            var updateUserQuery = `
-                UPDATE utilisateur SET 
-                    nom = ?, 
-                    email = ?, 
-                    mot_de_passe = ?
+            // Mise à jour de l'utilisateur associé
+            var updateUserQuery = `UPDATE utilisateur SET 
+                nom = ?, 
+                email = ?, 
+                mot_de_passe = ?
                 WHERE email = ?`;
 
-            const userValues = [nom + " " + prénom, email, mot_de_pass, oldEmail];
+            const userValues = [`${nom} ${prénom}`, email, mot_de_pass, oldEmail];
 
             connection.query(updateUserQuery, userValues, (err3, results3) => {
                 if (err3) {
-                    return res.status(500).json({ message: "Professeur modifié mais erreur lors de la mise à jour utilisateur", error: err3 });
+                    console.error("Erreur lors de la mise à jour de l'utilisateur:", err3);
+                    return res.status(500).json({ 
+                        message: "Professeur mis à jour mais erreur lors de la mise à jour de l'utilisateur", 
+                        error: err3 
+                    });
                 }
 
-                return res.status(200).json({ message: "Professeur et utilisateur mis à jour avec succès ✔ !!" });
+                return res.status(200).json({ 
+                    success: true,
+                    message: "Professeur et utilisateur mis à jour avec succès",
+                    updatedId: id_prof
+                });
             });
         });
     });

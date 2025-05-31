@@ -3,40 +3,31 @@ const connection = require('../../../backend/connection');
 const router = express.Router();
 require('dotenv').config();
 
-// Import des modules de l'algorithme génétique
 const AlgorithmeGenetique = require('./GAlgo/algorithme');
 const { EmploiDuTemps, configurationExemple } = require('./GAlgo/edt');
 const criteres = require('./GAlgo/critiries');
 
-// Fonction pour générer l'emploi du temps avec l'algorithme génétique
 async function genererEmploiDuTemps(configuration, options = {}) {
   console.log("Démarrage de la génération d'emploi du temps...");
   
-  // Paramètres de l'algorithme génétique
   const parametres = {
-    taillePopulation: options.taillePopulation || 50,
-    tauxMutation: options.tauxMutation || 0.2,
+    taillePopulation: options.taillePopulation || 100,
+    tauxMutation: options.tauxMutation || 0.3,
     tauxCroisement: options.tauxCroisement || 0.8,
-    nombreGenerations: options.nombreGenerations || 200,
+    nombreGenerations: options.nombreGenerations || 500,
     elitisme: options.elitisme !== undefined ? options.elitisme : true,
     nombreElites: options.nombreElites || 2
   };
   
-  // Créer l'algorithme génétique
   const algo = new AlgorithmeGenetique(parametres);
-  
-  // Fonction de génération d'un emploi du temps aléatoire
   const generateur = () => EmploiDuTemps.genererAleatoire(configuration);
   
-  // Initialiser la population
   console.log("Initialisation de la population initiale...");
   algo.initialiserPopulation(generateur);
   
-  // Exécuter l'algorithme
   console.log(`Exécution de l'algorithme pour ${parametres.nombreGenerations} générations...`);
   const meilleureSolution = algo.executer(generateur);
   
-  // Statistiques
   const stats = algo.getStatistiques();
   
   return {
@@ -48,15 +39,11 @@ async function genererEmploiDuTemps(configuration, options = {}) {
   };
 }
 
-// Fonction pour récupérer les données nécessaires depuis la base de données
 async function chargerDonneesDepuisDB() {
   try {
-    // Utiliser la configuration d'exemple par défaut
-    // En cas d'erreur avec la base de données
     const configuration = { ...configurationExemple };
     
     try {
-      // Récupérer les professeurs
       const professeurs = await new Promise((resolve, reject) => {
         connection.query('SELECT id_prof, nom FROM professeur', (err, results) => {
           if (err) {
@@ -67,7 +54,7 @@ async function chargerDonneesDepuisDB() {
             resolve([]);
           } else {
             resolve(results.map(p => ({ 
-              id: p.id_prof.toString(), // Uniformiser avec 'id' pour la cohérence
+              id: p.id_prof.toString(),
               id_prof: p.id_prof.toString(), 
               nom: p.nom,
               indisponibilites: [] 
@@ -80,7 +67,6 @@ async function chargerDonneesDepuisDB() {
         configuration.professeurs = professeurs;
       }
       
-      // Récupérer les salles
       const salles = await new Promise((resolve, reject) => {
         connection.query('SELECT id_salle, capacité FROM salle', (err, results) => {
           if (err) {
@@ -91,7 +77,7 @@ async function chargerDonneesDepuisDB() {
             resolve([]);
           } else {
             resolve(results.map(s => ({ 
-              id: s.id_salle.toString(), // Uniformiser avec 'id' pour la cohérence
+              id: s.id_salle.toString(),
               id_salle: s.id_salle.toString(), 
               nom: s.nom || `Salle ${s.id_salle}`,
               capacite: s.capacité || 30
@@ -104,9 +90,8 @@ async function chargerDonneesDepuisDB() {
         configuration.salles = salles;
       }
       
-      // Récupérer les classes (groupes)
       const groupes = await new Promise((resolve, reject) => {
-        connection.query('SELECT id_classe, nom, nbr_élèves FROM classe', (err, results) => {
+        connection.query('SELECT id_classe, nom FROM classe', (err, results) => {
           if (err) {
             console.error("Erreur SQL (classe):", err);
             resolve([]);
@@ -125,10 +110,9 @@ async function chargerDonneesDepuisDB() {
       });
       
       if (groupes.length > 0) {
-        configuration.groupe = groupes; // Correction: groupe au lieu de classe
+        configuration.groupe = groupes;
       }
       
-      // Récupérer les matières
       const matieres = await new Promise((resolve, reject) => {
         connection.query('SELECT id_matiere, nom, id_prof FROM matiere', (err, results) => {
           if (err) {
@@ -153,7 +137,6 @@ async function chargerDonneesDepuisDB() {
         configuration.matieres = matieres;
       }
       
-      // Récupérer les créneaux
       const creneaux = await new Promise((resolve, reject) => {
         connection.query('SELECT id_créneau, jour, h_début, h_fin FROM creneau', (err, results) => {
           if (err) {
@@ -186,15 +169,12 @@ async function chargerDonneesDepuisDB() {
     return configuration;
   } catch (error) {
     console.error('Erreur globale lors du chargement des données:', error);
-    // En cas d'erreur, retourner la configuration d'exemple
     return configurationExemple;
   }
 }
 
-// Sauvegarder l'emploi du temps généré dans la base de données
 async function sauvegarderEmploiDuTemps(emploiDuTemps) {
   try {
-    // Vérifier si la table seance existe
     const tableExists = await new Promise((resolve, reject) => {
       connection.query("SHOW TABLES LIKE 'seance'", (err, results) => {
         if (err) {
@@ -211,7 +191,6 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
       return false;
     }
     
-    // Supprimer les anciens seances
     await new Promise((resolve, reject) => {
       connection.query('DELETE FROM seance', (err, results) => {
         if (err) {
@@ -223,13 +202,10 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
       });
     });
     
-    // Insérer les nouveaux seances
     for (const seance of emploiDuTemps.seance) {
       try {
-        // Déterminer le créneau horaire approprié si les créneaux existent
         let idCreneau = null;
         if (emploiDuTemps.creneaux && emploiDuTemps.creneaux.length > 0) {
-          // Rechercher un créneau correspondant au jour et aux heures
           const creneauTrouve = emploiDuTemps.creneaux.find(c => 
             c.jour === seance.jour && 
             c.heureDebut <= seance.heureDebut && 
@@ -242,7 +218,6 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
         }
         
         await new Promise((resolve, reject) => {
-          // Adaptez cette requête selon la structure exacte de votre table seance
           const query = idCreneau 
             ? 'INSERT INTO seance (id_matiere, id_professeur, id_salle, id_classe, jour, id_creneau) VALUES (?, ?, ?, ?, ?, ?)'
             : 'INSERT INTO seance (id_matiere, id_professeur, id_salle, id_classe, jour, heure_debut, heure_fin) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -254,7 +229,6 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
           connection.query(query, params, (err, results) => {
             if (err) {
               console.error("Erreur lors de l'insertion d'une séance:", err);
-              // Continue malgré l'erreur
               resolve(false);
             } else {
               resolve(true);
@@ -263,7 +237,6 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
         });
       } catch (seanceError) {
         console.error('Erreur lors du traitement d\'une séance:', seanceError);
-        // Continue avec la prochaine séance
       }
     }
     
@@ -274,12 +247,10 @@ async function sauvegarderEmploiDuTemps(emploiDuTemps) {
   }
 }
 
-// Route pour générer automatiquement un emploi du temps
 router.get('/generate-automatic', async (req, res) => {
   try {
     console.log("Traitement de la requête de génération d'emploi du temps...");
     
-    // Récupérer les paramètres optionnels depuis la requête
     const options = {
       taillePopulation: parseInt(req.query.population) || 50,
       tauxMutation: parseFloat(req.query.mutation) || 0.2,
@@ -289,30 +260,25 @@ router.get('/generate-automatic', async (req, res) => {
     
     console.log("Options utilisées:", options);
     
-    // Charger les données depuis la base de données
     console.log("Chargement des données...");
     const configuration = await chargerDonneesDepuisDB();
     
-    // Log de la configuration
     console.log(`Configuration chargée: ${configuration.professeurs.length} professeurs, ${configuration.salles.length} salles, ${configuration.groupe.length} groupes, ${configuration.matieres.length} matières`);
     
-    // Générer l'emploi du temps
     console.log("Génération de l'emploi du temps...");
     const resultat = await genererEmploiDuTemps(configuration, options);
     
-    // Sauvegarder l'emploi du temps dans la base de données si demandé
     let sauvegarde = false;
     if (req.query.save === 'true') {
       console.log("Sauvegarde de l'emploi du temps dans la base de données...");
       sauvegarde = await sauvegarderEmploiDuTemps(resultat.emploiDuTemps);
     }
     
-    // Renvoyer le résultat
     res.status(200).json({
       success: true,
       message: "Emploi du temps généré avec succès" + (sauvegarde ? " et sauvegardé" : ""),
       data: {
-        planningFormate: resultat.planningFormate,
+        classes: resultat.planningFormate,
         fitness: resultat.fitness,
         estValide: resultat.estValide,
         statistiques: {
@@ -333,7 +299,6 @@ router.get('/generate-automatic', async (req, res) => {
   }
 });
 
-// Route pour afficher les paramètres disponibles
 router.get('/params', (req, res) => {
   res.status(200).json({
     success: true,
@@ -348,7 +313,6 @@ router.get('/params', (req, res) => {
   });
 });
 
-// Ajout d'une route pour récupérer la configuration actuelle
 router.get('/configuration', async (req, res) => {
   try {
     const configuration = await chargerDonneesDepuisDB();

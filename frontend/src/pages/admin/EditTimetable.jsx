@@ -325,7 +325,7 @@ const EditTimetable = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

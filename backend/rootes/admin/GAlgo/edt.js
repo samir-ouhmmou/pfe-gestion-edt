@@ -171,7 +171,6 @@ class EmploiDuTemps {
           );
           
           if (chevauchement) {
-            // Vérifier les conflits de salle
             if (seance1.salle === seance2.salle) {
               return false; // Conflit de salle
             }
@@ -207,16 +206,19 @@ const configurationExemple = {
     { id: 'salle3', nom: 'C310', capacite: 50 }
   ],
   groupe: [
-    { id: 'groupe1', nom: 'L1 Informatique', effectif: 25 },
-    { id: 'groupe2', nom: 'L2 Informatique', effectif: 20 },
-    { id: 'groupe3', nom: 'L3 Informatique', effectif: 15 }
+    { id: 'groupe1', nom: 'CP1', effectif: 25 },
+    { id: 'groupe2', nom: 'CP2', effectif: 20 },
+    { id: 'groupe3', nom: 'CP3', effectif: 15 },
+    { id: 'groupe4', nom: 'CP4', effectif: 15 },
+    { id: 'groupe5', nom: 'CP5', effectif: 15 },
+    { id: 'groupe6', nom: 'CP6', effectif: 15 }
   ],
   matieres: [
-    { id: 'mat1', nom: 'Algorithmique', duree: 2 },
-    { id: 'mat2', nom: 'Programmation Java', duree: 3 },
-    { id: 'mat3', nom: 'Base de données', duree: 2 },
-    { id: 'mat4', nom: 'Réseaux', duree: 2 },
-    { id: 'mat5', nom: 'Mathématiques', duree: 2 }
+    { id: 'mat1', nom: 'Arabe', duree: 2 },
+    { id: 'mat2', nom: 'francais', duree: 3 },
+    { id: 'mat3', nom: 'islamique', duree: 2 },
+    { id: 'mat4', nom: 'sport', duree: 2 },
+    { id: 'mat5', nom: 'anglais', duree: 2 }
   ]
 };
 
