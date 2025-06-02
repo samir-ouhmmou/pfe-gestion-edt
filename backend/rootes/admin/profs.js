@@ -1,13 +1,16 @@
 const express = require('express');
 const connection = require('../../../backend/connection');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 //endpoint pour ajouter un professeur a la base de donnée 
-router.post('/add', (req, res) => {
+router.post('/add', async(req, res) => {
     let profs = req.body;
 
-    // ajoute dans professeur
+    const hashedPassword =  await bcrypt.hash(profs.mot_de_pass, 10);
+    profs.mot_de_pass = hashedPassword;
+    
     var profQuery = "INSERT INTO professeur(nom, prénom, email, telephone, spécialité, niveau, mot_de_pass) VALUES (?, ?, ?, ?, ?, ?, ?)";
     var profValues = [profs.nom, profs.prénom, profs.email, profs.telephone, profs.spécialité, profs.niveau, profs.mot_de_pass];
 
@@ -93,9 +96,12 @@ router.delete('/delete', (req, res) => {
 });
 
 //endpoint pour modifier un prof dans la base de donnée 
-router.put('/update', (req, res) => {
+router.put('/update', async(req, res) => {
     const id_prof = req.query.id;
-    const { nom, prénom, email, telephone, spécialité, niveau, mot_de_pass } = req.body;
+    let { nom, prénom, email, telephone, spécialité, niveau, mot_de_pass } = req.body;
+    //mot de passe haché ok apres le update
+    const hashedPassword =  await bcrypt.hash(mot_de_pass, 10);
+    mot_de_pass = hashedPassword;
 
     if (!id_prof) {
         return res.status(400).json({ message: "ID du professeur requis" });

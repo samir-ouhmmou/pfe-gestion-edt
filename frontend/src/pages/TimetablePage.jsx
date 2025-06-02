@@ -53,64 +53,64 @@ const TimetablePage = () => {
 
   const generatePDF = () => {
     if (!selectedClass) return;
-    
+
     const className = getClassName(selectedClass);
     const doc = new jsPDF();
-    
+
     doc.setFontSize(18);
     doc.text(`Emploi du temps - ${className}`, 105, 15, { align: 'center' });
-    
+
     const today = new Date();
     doc.setFontSize(10);
     doc.text(`Généré le: ${today.toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
-    
+
     doc.setFontSize(7);
     doc.setTextColor(0, 0, 0);
-    
+
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     let startY = 30;
     let startX = 20;
-    
+
     doc.setFillColor(235, 235, 235);
     doc.rect(startX, startY, 170, 10, 'F');
     doc.setFont('helvetica', 'bold');
     doc.text('Horaire', startX + 20, startY + 6, { align: 'center' });
-    
+
     for (let i = 0; i < days.length; i++) {
       doc.text(days[i], startX + 55 + (i * 30), startY + 6, { align: 'center' });
     }
-    
+
     const timeSlots = Array.from(new Set(timetableData.map(entry => `${entry.startTime}-${entry.endTime}`)));
     timeSlots.sort((a, b) => {
       const aStart = a.split('-')[0];
       const bStart = b.split('-')[0];
       return aStart.localeCompare(bStart);
     });
-    
+
     startY += 15;
     doc.setFont('helvetica', 'normal');
-    
+
     timeSlots.forEach((timeSlot, index) => {
       const [startTime, endTime] = timeSlot.split('-');
       const timeLabel = `${startTime} - ${endTime}`;
-      
+
       if (index % 2 === 0) {
         doc.setFillColor(245, 245, 245);
         doc.rect(startX, startY, 170, 15, 'F');
       }
-      
+
       doc.text(timeLabel, startX + 20, startY + 8, { align: 'center' });
-      
+
       days.forEach((day, dayIndex) => {
-        const entry = timetableData.find(e => 
+        const entry = timetableData.find(e =>
           e.day === day && e.startTime === startTime && e.endTime === endTime
         );
-        
+
         if (entry) {
           const teacher = getTeacherName(entry.teacherId);
           const room = getRoomName(entry.roomId);
           const text = `${entry.subject}\n${teacher}\n${room}`;
-          
+
           const lines = text.split('\n');
           lines.forEach((line, lineIndex) => {
             doc.text(line, startX + 55 + (dayIndex * 30), startY + 4 + (lineIndex * 4), { align: 'center' });
@@ -119,10 +119,10 @@ const TimetablePage = () => {
           doc.text('-', startX + 55 + (dayIndex * 30), startY + 8, { align: 'center' });
         }
       });
-      
+
       startY += 15;
     });
-    
+
     doc.save(`emploi-du-temps-${className}.pdf`);
   };
 
@@ -140,7 +140,7 @@ const TimetablePage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-20">
         <section className="py-12 bg-gray-200  ">
           <div className="container mx-auto px-4">
@@ -157,7 +157,7 @@ const TimetablePage = () => {
             </motion.div>
           </div>
         </section>
-        
+
         <section className="py-8 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -180,7 +180,7 @@ const TimetablePage = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="class" className="block text-sm font-medium text-gray-700 mb-1">
                     Classe
@@ -200,7 +200,7 @@ const TimetablePage = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="flex items-end">
                   <button
                     onClick={handleViewTimetable}
@@ -262,7 +262,7 @@ const TimetablePage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'].map((timeSlot, index) => {
+                        {['08:30-10:25', '10:35-12:30', '14:30-16:25', '16:35-18:30'].map((timeSlot, index) => {
                           const [startTime, endTime] = timeSlot.split('-');
                           return (
                             <tr key={timeSlot} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -273,7 +273,7 @@ const TimetablePage = () => {
                                 const entry = timetableData.find(
                                   (e) => e.day === day && e.startTime === startTime && e.endTime === endTime
                                 );
-                                
+
                                 return (
                                   <td key={`${day}-${timeSlot}`} className="py-3 px-4 border-b border-gray-200 text-center text-sm">
                                     {entry ? (
@@ -297,24 +297,24 @@ const TimetablePage = () => {
                 </motion.div>
               )}
 
-                {selectedClass && timetableData.length === 0 && !isLoading && (
-                  <div className="text-center py-8">
-                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-600">Aucun emploi du temps disponible pour cette classe.</p>
-                  </div>
-                )}
-                
-                {!selectedClass && !isLoading && (
-                  <div className="text-center py-8">
-                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-600">Sélectionnez un niveau et une classe pour afficher l'emploi du temps.</p>
-                  </div>
-                )}
+              {selectedClass && timetableData.length === 0 && !isLoading && (
+                <div className="text-center py-8">
+                  <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-600">Aucun emploi du temps disponible pour cette classe.</p>
+                </div>
+              )}
+
+              {!selectedClass && !isLoading && (
+                <div className="text-center py-8">
+                  <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-600">Sélectionnez un niveau et une classe pour afficher l'emploi du temps.</p>
+                </div>
+              )}
             </div>
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );
