@@ -1,136 +1,78 @@
+// rootes/prof/absenceRoutes.js
 const express = require('express');
 const router = express.Router();
 const connection = require('../../connection');
-const { verifyToken, isTeacher } = require('./auth');
 
-// Déclarer une absence
-router.post('/declarer', verifyToken, isTeacher, async (req, res) => {
-    const { date, type } = req.body;
-    const id_prof = req.user.id;
+// ➤ Ajouter une absence
+router.post('/', (req, res) => {
+  const { startDate, endDate, reason, id_prof } = req.body;
 
-    // Validation des types d'absence
-    const typesValides = ['maladie', 'formation', 'personnel', 'autre'];
-    if (!typesValides.includes(type)) {
-        return res.status(400).json({ 
-            message: "Type d'absence invalide",
-            types_acceptes: typesValides
-        });
+  if (!startDate || !endDate || !reason || !id_prof) {
+    return res.status(400).json({ message: "Champs requis manquants." });
+  }
+
+  // Validation des dates
+  if (new Date(startDate) > new Date(endDate)) {
+    return res.status(400).json({ message: "La date de début doit être avant la date de fin." });
+  }
+  const date=new Date();
+  const sql = `
+    INSERT INTO absence_reserve (date,date_debut, date_fin, type, motif, status, created_at, id_prof)
+    VALUES (?,?, ?, 'absence', ?, 'en attente', NOW(), ?)
+  `;
+
+  connection.query(sql, [date,startDate, endDate, reason, id_prof], (err, results) => {
+    if (err) {
+      console.error("❌ Erreur insertion absence:", err);
+      return res.status(500).json({ message: "Erreur serveur." });
     }
 
-    try {
-        // Vérification de la date
-        const today = new Date().toISOString().split('T')[0];
-        if (date < today) {
-            return res.status(400).json({ 
-                message: "La date doit être aujourd'hui ou dans le futur" 
-            });
-        }
-
-        // Insertion dans la base
-        const [result] = await connection.promise().query(
-            'INSERT INTO absence_reserve (date, type, id_prof) VALUES (?, ?, ?)',
-            [date, type, id_prof]
-        );
-
-        // Récupération de l'absence créée
-        const [rows] = await connection.promise().query(
-            'SELECT * FROM absence_reserve WHERE id = ?',
-            [result.insertId]
-        );
-
-        // Formatage de la réponse
-        const newAbsence = {
-            ...rows[0],
-            status: 'confirmed',
-            created_at: new Date().toISOString()
-        };
-
-        res.status(201).json(newAbsence);
-
-    } catch (error) {
-        console.error("Erreur SQL:", error.sql);
-        res.status(500).json({ 
-            message: "Erreur lors de la déclaration",
-            detail: error.sqlMessage || error.message
-        });
-    }
+    res.status(201).json({ message: "Absence enregistrée avec succès." });
+  });
 });
 
-// Récupérer les absences
-router.get('/mes-absences', verifyToken, isTeacher, async (req, res) => {
-    const id_prof = req.user.id;
+// ➤ Récupérer les absences d’un professeur
+router.get('/:id_prof', (req, res) => {
+  const { id_prof } = req.params;
 
-    try {
-        const [absences] = await connection.promise().query(
-            `SELECT 
-                id,
-                DATE_FORMAT(date, '%Y-%m-%d') as date,
-                type,
-                id_prof
-             FROM absence_reserve 
-             WHERE id_prof = ?
-             ORDER BY date DESC`,
-            [id_prof]
-        );
+  const sql = `
+    SELECT id, date_debut AS startDate, date_fin AS endDate, motif AS reason, status, created_at AS createdAt
+    FROM absence_reserve
+    WHERE id_prof = ? AND type = 'absence'
+    ORDER BY created_at DESC
+  `;
 
-        // Ajout des champs manquants pour le frontend
-        const formattedAbsences = absences.map(absence => ({
-            ...absence,
-            status: 'confirmed',
-            created_at: absence.date + 'T00:00:00' // Approximation si created_at n'existe pas
-        }));
-
-        res.status(200).json(formattedAbsences);
-
-    } catch (error) {
-        console.error("Erreur SQL complète:", {
-            message: error.message,
-            sql: error.sql,
-            stack: error.stack
-        });
-        res.status(500).json({ 
-            message: "Impossible de charger les absences",
-            detail: error.sqlMessage || "Erreur de connexion à la base"
-        });
+  connection.query(sql, [id_prof], (err, results) => {
+    if (err) {
+      console.error("❌ Erreur récupération absences:", err);
+      return res.status(500).json({ message: "Erreur serveur." });
     }
+
+    res.json(results);
+  });
 });
 
-// Annuler une absence
-router.delete('/annuler/:id', verifyToken, isTeacher, async (req, res) => {
-    const { id } = req.params;
-    const id_prof = req.user.id;
+// ➤ Supprimer une absence en attente
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
 
-    try {
-        // Vérification que l'absence appartient au professeur
-        const [check] = await connection.promise().query(
-            'SELECT id FROM absence_reserve WHERE id = ? AND id_prof = ?',
-            [id, id_prof]
-        );
+  const sql = `
+    DELETE FROM absence_reserve
+    WHERE id = ? AND status = 'en attente'
+  `;
 
-        if (check.length === 0) {
-            return res.status(404).json({ 
-                message: "Absence non trouvée ou non autorisée" 
-            });
-        }
-
-        // Suppression
-        await connection.promise().query(
-            'DELETE FROM absence_reserve WHERE id = ?',
-            [id]
-        );
-
-        res.status(200).json({ 
-            message: "Absence annulée avec succès",
-            id: id
-        });
-
-    } catch (error) {
-        console.error("Erreur SQL:", error.sql);
-        res.status(500).json({ 
-            message: "Erreur lors de l'annulation",
-            detail: error.sqlMessage
-        });
+  connection.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("❌ Erreur suppression absence:", err);
+      return res.status(500).json({ message: "Erreur serveur." });
     }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Absence non trouvée ou non supprimable." });
+    }
+
+    res.json({ message: "Absence supprimée avec succès." });
+  });
 });
 
 module.exports = router;

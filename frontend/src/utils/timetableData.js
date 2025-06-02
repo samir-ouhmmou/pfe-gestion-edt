@@ -69,17 +69,19 @@ const teachers = [
 
 // Mock data for rooms
 const rooms = [
-  { id: 's1', name: 'Salle 1', capacity: 30, building: 'A', floor: 1 },
-  { id: 's2', name: 'Salle 2', capacity: 30, building: 'A', floor: 1 },
-  { id: 's3', name: 'Salle 3', capacity: 30, building: 'A', floor: 1 },
-  { id: 's4', name: 'Salle 4', capacity: 30, building: 'A', floor: 2 },
-  { id: 's5', name: 'Salle 5', capacity: 30, building: 'A', floor: 2 },
-  { id: 's6', name: 'Salle 6', capacity: 30, building: 'A', floor: 2 },
-  { id: 's7', name: 'Salle 7', capacity: 30, building: 'A', floor: 2 },
-  { id: 's8', name: 'Gymnase', capacity: 60, building: 'B', floor: 0 },
-  // { id: 's9', name: 'Salle d\'Arts', capacity: 30, building: 'B', floor: 1 },
-  { id: 's10', name: 'Salle de Informatique', capacity: 30, building: 'B', floor: 1 },
-  { id: 's11', name: 'Bibliothèque', capacity: 45, building: 'C', floor: 1 },
+  { id: '1', name: 'salle 1', capacity: 30},
+  { id: '2', name: 'salle 2', capacity: 30},
+  { id: '3', name: 'salle 3', capacity: 30},
+  { id: '4', name: 'salle 4', capacity: 30},
+  { id: '5', name: 'salle 5', capacity: 30},
+  { id: '6', name: 'salle 6', capacity: 30},
+  { id: '7', name: 'salle 7', capacity: 30},
+  { id: '8', name: 'salle 8', capacity: 30},
+  { id: '9', name: 'Salle 9', capacity: 30},
+  { id: '10', name: 'Salle 10', capacity: 60},
+  { id: '11', name: 'Sport', capacity: 100},
+  { id: '12', name: 'Salle  Informatique', capacity: 30},
+  { id: '13', name: 'Bibliothèque', capacity: 100},
 ];
 
 // Function to generate timetable entries

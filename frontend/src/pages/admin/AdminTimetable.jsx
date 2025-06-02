@@ -1,3 +1,4 @@
+// AdminTimetable.jsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -15,27 +16,25 @@ const AdminTimetable = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  
-  // Filters classes based on selected level
+
   const handleLevelChange = (e) => {
     const level = e.target.value;
     setSelectedLevel(level);
-    
+
     if (level) {
       setFilteredClasses(classes.filter(cls => cls.levelId === level));
     } else {
       setFilteredClasses([]);
     }
-    
+
     setSelectedClass('');
     setTimetableData([]);
   };
-  
-  // Loads timetable data for selected class
+
   const handleClassChange = (e) => {
     const classId = e.target.value;
     setSelectedClass(classId);
-    
+
     if (classId) {
       setIsLoading(true);
       setTimeout(() => {
@@ -47,89 +46,66 @@ const AdminTimetable = () => {
       setTimetableData([]);
     }
   };
-  
-  // Simulates automatic timetable generation
+
   const handleGenerateTimetable = () => {
     setIsGenerating(true);
-    
-    // Simulate generation process
     setTimeout(() => {
       setIsGenerating(false);
       setShowSuccess(true);
-      
-      // Auto-hide success message after 3 seconds
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000);
+      localStorage.setItem('lastGenerationDate', new Date().toISOString());
+      setTimeout(() => setShowSuccess(false), 3000);
     }, 2000);
   };
-  
-  // Gets teacher name by ID
+
   const getTeacherName = (teacherId) => {
     const teacher = teachers.find(t => t.id === teacherId);
     return teacher ? teacher.name : 'Non assigné';
   };
-  
-  // Gets room name by ID
+
   const getRoomName = (roomId) => {
     const room = rooms.find(r => r.id === roomId);
     return room ? room.name : 'Non assignée';
   };
-  
-  // Exports timetable as PDF
+
   const exportToPDF = () => {
     if (!selectedClass) return;
-    
+
     const classObj = classes.find(c => c.id === selectedClass);
     const className = classObj ? classObj.name : 'Classe';
-    
+
     const doc = new jsPDF();
-    
-    // Add title
     doc.setFontSize(18);
     doc.text(`Emploi du temps - ${className}`, 105, 15, { align: 'center' });
-    
-    // Add date
+
     doc.setFontSize(10);
     doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
-    
-    // Add table
+
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     const timeSlots = ['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'];
-    
+
     let startY = 30;
-    
-    // Header row
     doc.setFillColor(240, 240, 240);
     doc.rect(10, startY, 190, 10, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.text('Horaire', 20, startY + 6);
-    
     days.forEach((day, index) => {
       doc.text(day, 50 + (index * 30), startY + 6);
     });
-    
+
     startY += 15;
     doc.setFont('helvetica', 'normal');
-    
-    // Data rows
+
     timeSlots.forEach((timeSlot, rowIndex) => {
       const [start, end] = timeSlot.split('-');
-      
-      // Row background
       if (rowIndex % 2 === 0) {
         doc.setFillColor(250, 250, 250);
         doc.rect(10, startY - 5, 190, 20, 'F');
       }
-      
+
       doc.text(`${start}-${end}`, 20, startY);
-      
       days.forEach((day, dayIndex) => {
-        const entry = timetableData.find(e => 
-          e.day === day && e.startTime === start && e.endTime === end
-        );
-        
+        const entry = timetableData.find(e => e.day === day && e.startTime === start && e.endTime === end);
         if (entry) {
           const teacher = getTeacherName(entry.teacherId);
           const subject = entry.subject;
@@ -137,18 +113,17 @@ const AdminTimetable = () => {
           doc.text(teacher, 50 + (dayIndex * 30), startY + 5, { fontSize: 8 });
         }
       });
-      
+
       startY += 20;
     });
-    
-    // Save PDF
+
     doc.save(`emploi-du-temps-${className}.pdf`);
   };
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-20 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
@@ -160,7 +135,7 @@ const AdminTimetable = () => {
               <span className="text-gray-500">/</span>
               <span className="text-gray-800">Gestion des emplois du temps</span>
             </div>
-            
+
             <button
               onClick={handleGenerateTimetable}
               disabled={isGenerating}
@@ -179,7 +154,7 @@ const AdminTimetable = () => {
               )}
             </button>
           </div>
-          
+
           {showSuccess && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -191,7 +166,7 @@ const AdminTimetable = () => {
               <p className="text-green-700">Les emplois du temps ont été générés avec succès pour toutes les classes.</p>
             </motion.div>
           )}
-          
+
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <Calendar className="h-6 w-6 mr-2 text-lime-600" />
@@ -318,7 +293,7 @@ const AdminTimetable = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
