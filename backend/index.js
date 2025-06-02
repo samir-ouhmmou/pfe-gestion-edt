@@ -1,3 +1,4 @@
+require('dotenv').config(); // 🔐 pour charger JWT_SECRET
 const express = require('express');
 var cors = require('cors');
 const connection = require('./connection');
@@ -9,8 +10,11 @@ const salleRoute = require('./rootes/admin/salle');
 const profsRoute = require('./rootes/admin/profs');
 const niveauRoute = require('./rootes/admin/Niveau');
 const absenceRoute = require('./rootes/prof/absenceRoutes');
+const reservationRoute = require('./rootes/prof/reservationRoutes');
+const tasksRoutes = require('./rootes/admin/tasksRoutes');
 const statistics = require('./rootes/admin/statistics');
 const app = express();
+const jwt = require('jsonwebtoken');
 
 // Middleware
 const corsOptions = {
@@ -33,7 +37,7 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ message: "Token non fourni" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.ACCES_TOKEN, (err, user) => {
     if (err) {
       console.error("Erreur de vérification du token:", err);
       return res.status(403).json({ message: "Token invalide ou expiré" });
@@ -42,7 +46,6 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
-
 // Routes
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -55,7 +58,9 @@ app.use('/api/classes', classeRoute);
 app.use('/api/salles', salleRoute);
 app.use('/api/profs', profsRoute);
 app.use('/api/niveau', niveauRoute);
-app.use('/api/absence', authenticateToken, absenceRoute); 
+app.use('/api/absence', absenceRoute); 
+app.use('/api/reservation', reservationRoute);
+app.use('/api/admin', tasksRoutes);
 app.use('/api/statistics',statistics);
 const PORT = process.env.PORT || 8888;
 

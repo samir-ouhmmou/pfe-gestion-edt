@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }) => {
           logout();
         } else {
           const userData = {
-            id: decoded.id,
+            id: decoded.id_utilisateur,
             name: decoded.nom,
             email: decoded.email,
             role: decoded.role
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }) => {
 
       const decoded = jwtDecode(token);
       const userData = {
-        id: decoded.id,
+        id: decoded.id_utilisateur,
         name: decoded.nom,
         email: decoded.email,
         role: decoded.role
