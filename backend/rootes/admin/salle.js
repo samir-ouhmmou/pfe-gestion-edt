@@ -6,8 +6,8 @@ require('dotenv').config();
 //api pour ajouter une salle a la base de donnée 
 router.post('/add', (req,res) => {
     let salle = req.body;
-    var query = "insert into salle(capacité) values(?)";
-    connection.query(query,[salle.capacité],(err,results) => {
+    var query = "insert into salle(capacité,nom) values(?,?)";
+    connection.query(query,[salle.capacité,salle.nom],(err,results) => {
         if(!err){
             return res.status(200).json({ message : "salle added succesfuly !!"});
         }
@@ -56,9 +56,9 @@ router.delete('/delete',(req,res) => {
 //api pour modifier un classe dans une base de donnée 
 router.put('/update', (req, res) => {
     const id_salle = req.query.id;
-    const {capacité }= req.body;
-    var query = "UPDATE salle SET capacité = ? WHERE id_salle = ?";
-    connection.query(query, [capacité,id_salle], (err, results) => {
+    const {capacité, nom }= req.body;
+    var query = "UPDATE salle SET capacité = ? ,nom = ? WHERE id_salle = ?";
+    connection.query(query, [ capacité, nom, id_salle], (err, results) => {
         if (!err) {
             if (results.affectedRows === 0) {
                 return res.status(404).json({ message: "Aucun salle  trouvé avec cet id" });

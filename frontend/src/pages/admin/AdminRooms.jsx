@@ -15,6 +15,7 @@ const AdminRooms = () => {
   const [editRoomId, setEditRoomId] = useState(null);
   const [formData, setFormData] = useState({
     id_salle: '',
+    nom : '',
     capacité: 30
   });
   const [formErrors, setFormErrors] = useState({});
@@ -81,12 +82,19 @@ const AdminRooms = () => {
   const validateForm = () => {
     const errors = {};
 
-    if (!formData.id_salle.trim()) {
+    // if (!formData.id_salle.trim()) {
+    //   errors.id_salle = "L'identifiant de la salle est requis";
+    // }
+    if (!String(formData.id_salle).trim()) {
       errors.id_salle = "L'identifiant de la salle est requis";
     }
 
+
     if (formData.capacité <= 0) {
       errors.capacité = 'La capacité doit être supérieure à 0';
+    }
+    if (!formData.nom.trim()) {
+      errors.nom = "Le nom de la salle est requis";
     }
 
     setFormErrors(errors);
@@ -128,6 +136,7 @@ const handleSubmit = async (e) => {
   const resetForm = () => {
     setFormData({
       id_salle: '',
+      nom: '',
       capacité: 30
     });
     setFormErrors({});
@@ -139,6 +148,7 @@ const handleSubmit = async (e) => {
   const handleEdit = (room) => {
     setFormData({
       id_salle: room.id_salle,
+      nom: room.nom,
       capacité: room.capacité
     });
     setEditRoomId(room.id_salle);
@@ -274,10 +284,28 @@ const handleSubmit = async (e) => {
                           onChange={handleInputChange}
                           className={`block w-full px-4 py-2 border ${formErrors.id_salle ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
                           placeholder="Ex: S101"
-                          disabled={isLoading}
+                          disabled={isLoading }
                         />
                         {formErrors.id_salle && (
                           <p className="mt-1 text-sm text-red-600">{formErrors.id_salle}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="nom" className="block text-sm font-medium text-gray-700 mb-1">
+                          Nom Salle*
+                        </label>
+                        <input
+                          type="text"
+                          id="nom"
+                          name="nom"
+                          value={formData.nom}
+                          onChange={handleInputChange}
+                          className={`block w-full px-4 py-2 border ${formErrors.nom? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                          placeholder="Ex: S101"
+                          disabled={isLoading}
+                        />
+                        {formErrors.nom && (
+                          <p className="mt-1 text-sm text-red-600">{formErrors.nom}</p>
                         )}
                       </div>
 
@@ -362,6 +390,7 @@ const handleSubmit = async (e) => {
                   <thead>
                     <tr className="text-left">
                       <th className="px-6 py-3 text-sm font-medium text-gray-900">ID Salle</th>
+                      <th className="px-6 py-3 text-sm font-medium text-gray-900">Nom </th>
                       <th className="px-6 py-3 text-sm font-medium text-gray-900">Capacité</th>
                       <th className="px-6 py-3 text-sm font-medium text-gray-900">Actions</th>
                     </tr>
@@ -370,6 +399,7 @@ const handleSubmit = async (e) => {
                     {filteredRooms.map((room) => (
                       <tr key={room.id_salle} className="border-t border-gray-100 hover:bg-gray-50">
                         <td className="px-6 py-4 text-sm font-medium text-gray-800">{room.id_salle}</td>
+                         <td className="px-6 py-4 text-sm font-medium text-gray-800">{room.nom}</td>
                         <td className="px-6 py-4 text-sm text-gray-600">{room.capacité}</td>
                         <td className="px-6 py-4 text-sm">
                           <button
