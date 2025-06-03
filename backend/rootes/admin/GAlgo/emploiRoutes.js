@@ -95,7 +95,8 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../../../connection');
 const { configurationExemple } = require('./edt');
-const { algorithmeGenetique } = require('./algorithme');
+// const { algorithmeGenetique } = require('./algorithme');
+const { algorithmeGenetiqueAmeliore } = require('./algorithme');
 const { chargerDonneesDepuisDB } = require('./dataLoader');
 
 // Convertit un nombre décimal (ex: 8.5) en heure "08:30:00"
@@ -162,7 +163,7 @@ router.post('/generate', async (req, res) => {
     }
 
     // Générer l'emploi du temps
-    const meilleurEDT = algorithmeGenetique(configFromDB, 100);
+    const meilleurEDT = algorithmeGenetiqueAmeliore(configFromDB, 100);
     const seances = meilleurEDT.seance;
 
     for (const seance of seances) {
