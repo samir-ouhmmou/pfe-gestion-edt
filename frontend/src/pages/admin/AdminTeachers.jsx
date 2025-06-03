@@ -311,7 +311,7 @@ const AdminTeachers = () => {
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Niveaux pris en charge</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                          {['CP', 'CE1', 'CE2', 'CM1', 'CM2'].map(niveau => (
+                          {['1P', '2P', '3P', '4P', '5P', '6P'].map(niveau => (
                             <label
                               key={niveau}
                               className={`flex items-center p-3 rounded-lg border ${formData.niveaux.includes(niveau)

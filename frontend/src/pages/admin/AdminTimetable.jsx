@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
+import axios from 'axios';
 import Header from '../../Components/common/Header';
 import Footer from '../../Components/common/Footer';
 import { Calendar, Download, HomeIcon, Settings, RefreshCw, Check } from 'lucide-react';
-import { classLevels, classes, getClassTimetable, teachers, rooms } from '../../utils/timetableData';
+import { classLevels, classes, teachers, rooms } from '../../utils/timetableData';
 
 const AdminTimetable = () => {
   const [selectedLevel, setSelectedLevel] = useState('');
@@ -20,70 +21,76 @@ const AdminTimetable = () => {
   const handleLevelChange = (e) => {
     const level = e.target.value;
     setSelectedLevel(level);
-
     if (level) {
       setFilteredClasses(classes.filter(cls => cls.levelId === level));
     } else {
       setFilteredClasses([]);
     }
-
     setSelectedClass('');
     setTimetableData([]);
   };
 
-  const handleClassChange = (e) => {
+  const handleClassChange = async (e) => {
     const classId = e.target.value;
     setSelectedClass(classId);
-
     if (classId) {
       setIsLoading(true);
-      setTimeout(() => {
-        const data = getClassTimetable(classId);
-        setTimetableData(data);
+      try {
+        const res = await axios.get(`http://localhost:8888/api/emploi/${classId}`);
+        setTimetableData(res.data || []);
+      } catch (err) {
+        console.error("Erreur lors du chargement du planning :", err);
+        setTimetableData([]);
+      } finally {
         setIsLoading(false);
-      }, 500);
+      }
     } else {
       setTimetableData([]);
     }
   };
 
-  const handleGenerateTimetable = () => {
+  const handleGenerateTimetable = async () => {
     setIsGenerating(true);
-    setTimeout(() => {
+    try {
+      const response = await axios.post('http://localhost:8888/api/emploi/generate');
+      if (response.data.success) {
+        setShowSuccess(true);
+        localStorage.setItem('lastGenerationDate', new Date().toISOString());
+      }
+    } catch (err) {
+      console.error("Erreur de génération :", err);
+      alert("Erreur lors de la génération des emplois du temps.");
+    } finally {
       setIsGenerating(false);
-      setShowSuccess(true);
-      localStorage.setItem('lastGenerationDate', new Date().toISOString());
       setTimeout(() => setShowSuccess(false), 3000);
-    }, 2000);
+    }
   };
 
-  const getTeacherName = (teacherId) => {
-    const teacher = teachers.find(t => t.id === teacherId);
-    return teacher ? teacher.name : 'Non assigné';
-  };
+  // const getTeacherName = (teacherId) => {
+  //   const teacher = teachers.find(t => t.id === teacherId);
+  //   return teacher ? teacher.name : 'Non assigné';
+  // };
 
-  const getRoomName = (roomId) => {
-    const room = rooms.find(r => r.id === roomId);
-    return room ? room.name : 'Non assignée';
-  };
+  // const getRoomName = (roomId) => {
+  //   const room = rooms.find(r => r.id === roomId);
+  //   return room ? room.name : 'Non assignée';
+  // };
 
   const exportToPDF = () => {
     if (!selectedClass) return;
-
     const classObj = classes.find(c => c.id === selectedClass);
     const className = classObj ? classObj.name : 'Classe';
 
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text(`Emploi du temps - ${className}`, 105, 15, { align: 'center' });
-
     doc.setFontSize(10);
     doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
 
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
-    const timeSlots = ['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'];
-
+    const timeSlots = ['08:30:00-10:25:00', '10:35:00-12:30:00', '14:30:00-16:25:00', '16:35:00-18:30:00'];
     let startY = 30;
+
     doc.setFillColor(240, 240, 240);
     doc.rect(10, startY, 190, 10, 'F');
     doc.setFont('helvetica', 'bold');
@@ -120,11 +127,11 @@ const AdminTimetable = () => {
     doc.save(`emploi-du-temps-${className}.pdf`);
   };
 
+  // JSX identique (inchangé)
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-
-      <main className="flex-1 pt-20 pb-12 bg-gray-50">
+     <main className="flex-1 pt-20 pb-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -255,7 +262,7 @@ const AdminTimetable = () => {
                     </tr>
                   </thead>
                   <tbody>
-                        {['08:00-10:00', '10:30-12:30', '14:00-16:00', '16:30-17:30'].map((timeSlot, index) => {
+                        {['08:30-10:25', '10:35-12:30', '14:30-16:25', '16:35-18:30'].map((timeSlot, index) => {
                           const [startTime, endTime] = timeSlot.split('-');
                           return (
                             <tr key={timeSlot} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -272,12 +279,13 @@ const AdminTimetable = () => {
                                     {entry ? (
                                       <div>
                                         <p className="font-medium text-gray-800">{entry.subject}</p>
-                                        <p className="text-gray-600">{getTeacherName(entry.teacherId)}</p>
-                                        <p className="text-gray-500">{getRoomName(entry.roomId)}</p>
+                                        <p className="text-gray-600">{entry.teacherName || 'Non assigné'}</p>
+                                        <p className="text-gray-500">{entry.roomName || 'Non assignée'}</p>
                                       </div>
                                     ) : (
                                       <span className="text-gray-400">-</span>
                                     )}
+
                                   </td>
                                 );
                               })}
@@ -293,7 +301,6 @@ const AdminTimetable = () => {
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

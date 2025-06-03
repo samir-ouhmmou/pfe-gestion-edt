@@ -12,18 +12,18 @@ const availableLevels = ['1P', '2P', '3P', '4P', '5P', '6P'];
 
 // Mock data for classes
 const classes = [
-  { id: '1p-a', name: '1P A', levelId: '1P' },
-  { id: '1p-b', name: '1P B', levelId: '1P' },
-  { id: '2p-a', name: '2P A', levelId: '2P' },
-  { id: '2p-b', name: '2P B', levelId: '2P' },
-  { id: '3p-a', name: '3P A', levelId: '3P' },
-  { id: '3p-b', name: '3P B', levelId: '3P' },
-  { id: '4p-a', name: '4P A', levelId: '4P' },
-  { id: '4p-b', name: '4P B', levelId: '4P' },
-  { id: '5p-a', name: '5P A', levelId: '5P' },
-  { id: '5p-b', name: '5P B', levelId: '5P' },
-  { id: '6p-a', name: '6P A', levelId: '6P' },
-  { id: '6p-b', name: '6P B', levelId: '6P' },
+  { id: '26', name: '1P A', levelId: '1P' },
+  { id: '27', name: '1P B', levelId: '1P' },
+  { id: '28', name: '2P A', levelId: '2P' },
+  { id: '29', name: '2P B', levelId: '2P' },
+  { id: '30', name: '3P A', levelId: '3P' },
+  { id: '31', name: '3P B', levelId: '3P' },
+  { id: '32', name: '4P A', levelId: '4P' },
+  { id: '33', name: '4P B', levelId: '4P' },
+  { id: '34', name: '5P A', levelId: '5P' },
+  { id: '35', name: '5P B', levelId: '5P' },
+  { id: '36', name: '6P A', levelId: '6P' },
+  { id: '37', name: '6P B', levelId: '6P' },
 ];
 
 // les cours possible
@@ -115,16 +115,16 @@ const teachers = [
 
 // Mock data for rooms
 const rooms = [
-  { id: 's1', name: 'Salle 1', capacity: 30 },
-  { id: 's2', name: 'Salle 2', capacity: 30 },
-  { id: 's3', name: 'Salle 3', capacity: 30 },
-  { id: 's4', name: 'Salle 4', capacity: 30 },
-  { id: 's5', name: 'Salle 5', capacity: 30 },
-  { id: 's6', name: 'Salle 6', capacity: 30 },
-  { id: 's7', name: 'Salle 7', capacity: 30 },
-  { id: 's8', name: 'Sport', capacity: 60 },
-  { id: 's10', name: 'Salle Informatique', capacity: 25 },
-  { id: 's11', name: 'Bibliothèque', capacity: 45 },
+  { id: '1', name: 'Salle 1', capacity: 30 },
+  { id: '2', name: 'Salle 2', capacity: 30 },
+  { id: '3', name: 'Salle 3', capacity: 30 },
+  { id: '4', name: 'Salle 4', capacity: 30 },
+  { id: '5', name: 'Salle 5', capacity: 30 },
+  { id: '6', name: 'Salle 6', capacity: 30 },
+  { id: '7', name: 'Salle 7', capacity: 30 },
+  { id: '8', name: 'Sport', capacity: 60 },
+  { id: '10', name: 'Salle Informatique', capacity: 25 },
+  { id: '11', name: 'Bibliothèque', capacity: 45 },
 ];
 
 // fonction pour générer une emploi du temps 

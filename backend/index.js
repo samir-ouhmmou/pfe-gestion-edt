@@ -13,6 +13,8 @@ const absenceRoute = require('./rootes/prof/absenceRoutes');
 const reservationRoute = require('./rootes/prof/reservationRoutes');
 const tasksRoutes = require('./rootes/admin/tasksRoutes');
 const statistics = require('./rootes/admin/statistics');
+const emploiRoute = require('./rootes/admin/GAlgo/emploiRoutes');
+
 const app = express();
 const jwt = require('jsonwebtoken');
 
@@ -62,6 +64,7 @@ app.use('/api/absence', absenceRoute);
 app.use('/api/reservation', reservationRoute);
 app.use('/api/admin', tasksRoutes);
 app.use('/api/statistics',statistics);
+app.use('/api/emploi', emploiRoute);
 const PORT = process.env.PORT || 8888;
 
 module.exports = app;
